@@ -1,0 +1,175 @@
+2019-03-23 23:18:03,491 - INFO - data_handler - LINE 18: 程序主体初始化中...
+2019-03-23 23:18:03,491 - INFO - data_handler - LINE 18: 读取配置文件中...
+2019-03-23 23:18:03,491 - INFO - data_handler - LINE 18: 读取配置文件完成.
+2019-03-23 23:18:03,491 - INFO - data_handler - LINE 18: 程序主体初始化完成.
+2019-03-23 23:18:03,491 - INFO - data_handler - LINE 18: 获取账户相关资产余额中...
+2019-03-23 23:18:24,518 - ERROR - main - LINE 31: Traceback (most recent call last):
+  File "D:\Program Files\Python35\lib\site-packages\urllib3\connection.py", line 159, in _new_conn
+    (self._dns_host, self.port), self.timeout, **extra_kw)
+  File "D:\Program Files\Python35\lib\site-packages\urllib3\util\connection.py", line 80, in create_connection
+    raise err
+  File "D:\Program Files\Python35\lib\site-packages\urllib3\util\connection.py", line 70, in create_connection
+    sock.connect(sa)
+TimeoutError: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Program Files\Python35\lib\site-packages\urllib3\connectionpool.py", line 600, in urlopen
+    chunked=chunked)
+  File "D:\Program Files\Python35\lib\site-packages\urllib3\connectionpool.py", line 343, in _make_request
+    self._validate_conn(conn)
+  File "D:\Program Files\Python35\lib\site-packages\urllib3\connectionpool.py", line 839, in _validate_conn
+    conn.connect()
+  File "D:\Program Files\Python35\lib\site-packages\urllib3\connection.py", line 301, in connect
+    conn = self._new_conn()
+  File "D:\Program Files\Python35\lib\site-packages\urllib3\connection.py", line 168, in _new_conn
+    self, "Failed to establish a new connection: %s" % e)
+urllib3.exceptions.NewConnectionError: <urllib3.connection.VerifiedHTTPSConnection object at 0x000000000402A8D0>: Failed to establish a new connection: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Program Files\Python35\lib\site-packages\requests\adapters.py", line 449, in send
+    timeout=timeout
+  File "D:\Program Files\Python35\lib\site-packages\urllib3\connectionpool.py", line 638, in urlopen
+    _stacktrace=sys.exc_info()[2])
+  File "D:\Program Files\Python35\lib\site-packages\urllib3\util\retry.py", line 398, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='www.binance.com', port=443): Max retries exceeded with url: /api/v3/account?timestamp=1553354283491&signature=2f53423d0fce4abde1ddd351f49c5834f9a957774d6285ba101c8426b2239824 (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x000000000402A8D0>: Failed to establish a new connection: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。',))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "E:/Python/PrivateProjects/PythonBinance/main.py", line 25, in <module>
+    trade_balance, target_balance = handler.get_balance()
+  File "E:\Python\PrivateProjects\PythonBinance\data_handler.py", line 61, in get_balance
+    account = self.rest_client.account()
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 135, in _call
+    return method.execute()
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 130, in execute
+    content = self._do_api_request(url, method, body, headers)
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 98, in _do_api_request
+    response = Request(self.api).make_request(url, method=method, body=body, headers=headers)
+  File "D:\Program Files\Python35\lib\site-packages\binance\request.py", line 67, in make_request
+    return requests.get(url, headers=headers)
+  File "D:\Program Files\Python35\lib\site-packages\requests\api.py", line 75, in get
+    return request('get', url, params=params, **kwargs)
+  File "D:\Program Files\Python35\lib\site-packages\requests\api.py", line 60, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "D:\Program Files\Python35\lib\site-packages\requests\sessions.py", line 533, in request
+    resp = self.send(prep, **send_kwargs)
+  File "D:\Program Files\Python35\lib\site-packages\requests\sessions.py", line 646, in send
+    r = adapter.send(request, **kwargs)
+  File "D:\Program Files\Python35\lib\site-packages\requests\adapters.py", line 516, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='www.binance.com', port=443): Max retries exceeded with url: /api/v3/account?timestamp=1553354283491&signature=2f53423d0fce4abde1ddd351f49c5834f9a957774d6285ba101c8426b2239824 (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x000000000402A8D0>: Failed to establish a new connection: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。',))
+
+2019-03-23 23:18:25,548 - INFO - data_handler - LINE 18: 获取账户相关资产余额中...
+2019-03-23 23:47:30,325 - INFO - data_handler - LINE 18: 程序主体初始化中...
+2019-03-23 23:47:30,325 - INFO - data_handler - LINE 18: 读取配置文件中...
+2019-03-23 23:47:30,325 - INFO - data_handler - LINE 18: 读取配置文件完成.
+2019-03-23 23:47:30,325 - INFO - data_handler - LINE 18: 程序主体初始化完成.
+2019-03-23 23:47:30,326 - INFO - data_handler - LINE 18: 获取账户相关资产余额中...
+2019-03-23 23:47:31,295 - ERROR - BinanceAutoTrader - LINE 31: Traceback (most recent call last):
+  File "E:/Python/PrivateProjects/PythonBinance/BinanceAutoTrader.py", line 25, in <module>
+    trade_balance, target_balance = handler.get_balance()
+  File "E:\Python\PrivateProjects\PythonBinance\data_handler.py", line 60, in get_balance
+    account = self.rest_client.account()
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 135, in _call
+    return method.execute()
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 130, in execute
+    content = self._do_api_request(url, method, body, headers)
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 105, in _do_api_request
+    raise BinanceAPIError(response.status_code, content_obj["code"], content_obj["msg"])
+binance.bind.BinanceAPIError: (400) -1021: Timestamp for this request is outside of the recvWindow.
+
+2019-03-23 23:47:32,295 - INFO - data_handler - LINE 18: 获取账户相关资产余额中...
+2019-03-23 23:47:32,950 - ERROR - BinanceAutoTrader - LINE 31: Traceback (most recent call last):
+  File "E:/Python/PrivateProjects/PythonBinance/BinanceAutoTrader.py", line 25, in <module>
+    trade_balance, target_balance = handler.get_balance()
+  File "E:\Python\PrivateProjects\PythonBinance\data_handler.py", line 60, in get_balance
+    account = self.rest_client.account()
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 135, in _call
+    return method.execute()
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 130, in execute
+    content = self._do_api_request(url, method, body, headers)
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 105, in _do_api_request
+    raise BinanceAPIError(response.status_code, content_obj["code"], content_obj["msg"])
+binance.bind.BinanceAPIError: (400) -1021: Timestamp for this request is outside of the recvWindow.
+
+2019-03-23 23:47:33,951 - INFO - data_handler - LINE 18: 获取账户相关资产余额中...
+2019-03-23 23:47:34,770 - ERROR - BinanceAutoTrader - LINE 31: Traceback (most recent call last):
+  File "E:/Python/PrivateProjects/PythonBinance/BinanceAutoTrader.py", line 25, in <module>
+    trade_balance, target_balance = handler.get_balance()
+  File "E:\Python\PrivateProjects\PythonBinance\data_handler.py", line 60, in get_balance
+    account = self.rest_client.account()
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 135, in _call
+    return method.execute()
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 130, in execute
+    content = self._do_api_request(url, method, body, headers)
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 105, in _do_api_request
+    raise BinanceAPIError(response.status_code, content_obj["code"], content_obj["msg"])
+binance.bind.BinanceAPIError: (400) -1021: Timestamp for this request is outside of the recvWindow.
+
+2019-03-23 23:47:35,771 - INFO - data_handler - LINE 18: 获取账户相关资产余额中...
+2019-03-23 23:49:14,529 - INFO - data_handler - LINE 18: 程序主体初始化中...
+2019-03-23 23:49:14,529 - INFO - data_handler - LINE 18: 读取配置文件中...
+2019-03-23 23:49:14,529 - INFO - data_handler - LINE 18: 读取配置文件完成.
+2019-03-23 23:49:14,529 - INFO - data_handler - LINE 18: 程序主体初始化完成.
+2019-03-23 23:49:15,418 - INFO - data_handler - LINE 18: 获取账户相关资产余额中...
+2019-03-23 23:49:16,323 - ERROR - BinanceAutoTrader - LINE 32: Traceback (most recent call last):
+  File "E:/Python/PrivateProjects/PythonBinance/BinanceAutoTrader.py", line 26, in <module>
+    trade_balance, target_balance = handler.get_balance()
+  File "E:\Python\PrivateProjects\PythonBinance\data_handler.py", line 60, in get_balance
+    account = self.rest_client.account()
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 135, in _call
+    return method.execute()
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 130, in execute
+    content = self._do_api_request(url, method, body, headers)
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 105, in _do_api_request
+    raise BinanceAPIError(response.status_code, content_obj["code"], content_obj["msg"])
+binance.bind.BinanceAPIError: (400) -1021: Timestamp for this request is outside of the recvWindow.
+
+2019-03-23 23:49:17,337 - INFO - data_handler - LINE 18: 获取账户相关资产余额中...
+2019-03-23 23:49:18,179 - ERROR - BinanceAutoTrader - LINE 32: Traceback (most recent call last):
+  File "E:/Python/PrivateProjects/PythonBinance/BinanceAutoTrader.py", line 26, in <module>
+    trade_balance, target_balance = handler.get_balance()
+  File "E:\Python\PrivateProjects\PythonBinance\data_handler.py", line 60, in get_balance
+    account = self.rest_client.account()
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 135, in _call
+    return method.execute()
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 130, in execute
+    content = self._do_api_request(url, method, body, headers)
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 105, in _do_api_request
+    raise BinanceAPIError(response.status_code, content_obj["code"], content_obj["msg"])
+binance.bind.BinanceAPIError: (400) -1021: Timestamp for this request is outside of the recvWindow.
+
+2019-03-23 23:50:54,789 - INFO - data_handler - LINE 18: 程序主体初始化中...
+2019-03-23 23:50:54,789 - INFO - data_handler - LINE 18: 读取配置文件中...
+2019-03-23 23:50:54,789 - INFO - data_handler - LINE 18: 读取配置文件完成.
+2019-03-23 23:50:54,789 - INFO - data_handler - LINE 18: 程序主体初始化完成.
+2019-03-23 23:50:56,083 - INFO - data_handler - LINE 18: 获取账户相关资产余额中...
+2019-03-23 23:50:56,895 - ERROR - BinanceAutoTrader - LINE 32: Traceback (most recent call last):
+  File "E:/Python/PrivateProjects/PythonBinance/BinanceAutoTrader.py", line 26, in <module>
+    trade_balance, target_balance = handler.get_balance()
+  File "E:\Python\PrivateProjects\PythonBinance\data_handler.py", line 60, in get_balance
+    account = self.rest_client.account()
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 135, in _call
+    return method.execute()
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 130, in execute
+    content = self._do_api_request(url, method, body, headers)
+  File "D:\Program Files\Python35\lib\site-packages\binance\bind.py", line 105, in _do_api_request
+    raise BinanceAPIError(response.status_code, content_obj["code"], content_obj["msg"])
+binance.bind.BinanceAPIError: (400) -1021: Timestamp for this request is outside of the recvWindow.
+
+2019-03-23 23:50:57,909 - INFO - data_handler - LINE 18: 获取账户相关资产余额中...
+2019-03-23 23:51:12,903 - INFO - data_handler - LINE 18: 程序主体初始化中...
+2019-03-23 23:51:12,903 - INFO - data_handler - LINE 18: 读取配置文件中...
+2019-03-23 23:51:12,903 - INFO - data_handler - LINE 18: 读取配置文件完成.
+2019-03-23 23:51:12,903 - INFO - data_handler - LINE 18: 程序主体初始化完成.
+2019-03-23 23:51:14,260 - INFO - data_handler - LINE 18: 获取账户相关资产余额中...
+2019-03-23 23:59:27,194 - INFO - data_handler - LINE 18: 程序主体初始化中...
+2019-03-23 23:59:27,194 - INFO - data_handler - LINE 18: 读取配置文件中...
+2019-03-23 23:59:27,194 - INFO - data_handler - LINE 18: 读取配置文件完成.
+2019-03-23 23:59:27,194 - INFO - data_handler - LINE 18: 程序主体初始化完成.

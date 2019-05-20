@@ -1,0 +1,4 @@
+api_key=mw1kRdt1ovMemQscFmfWGmb6ZwinOkDICqYZ3TJFKmiGcaX4W9SV3mcR7JArGRco
+api_secret=ISbPVbOQiGIzy6VqEk8Sscafl767tFhueJJPWrMRclQRM3pDkAcbz8qzbxH8Otyj
+trade_symbol=IOST
+target_symbol=BTC
