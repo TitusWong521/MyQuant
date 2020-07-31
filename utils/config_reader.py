@@ -11,6 +11,7 @@ from utils.logger import logger
 class ConfigFileModifyHandler(FileSystemEventHandler):
     def on_modified(self, event):
         cfg = Config()
+        cfg.is_changed = True
         cfg.load_config()
 
 
@@ -18,6 +19,7 @@ class Config(object):
     _instance_lock = threading.Lock()
 
     def __init__(self):
+        self.is_changed = False
         logger.info('正在初始化配置文件...')
         self.config = ConfigParser()
 

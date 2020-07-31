@@ -5,7 +5,7 @@ from utils.logger import logger
 from utils.mailhelper import mail_helper
 
 class GridStrat():
-    def __init__(self, start_value, lowest, highest, parts, buy, sell, fee=0.002):
+    def __init__(self, start_value, lowest, highest, parts, buy, sell, cfg, fee=0.002):
         self.start_value = float(start_value)
         self.money = float(start_value)
         self.token = 0.0
@@ -16,6 +16,7 @@ class GridStrat():
         self.parts = parts
         self.buy = buy
         self.sell = sell
+        self.cfg = cfg
         self.fee = fee
         self.init_grid()
 
@@ -97,12 +98,14 @@ class GridStrat():
         if target > 0:
             self.buy(usdt_ammount)
             logs.append('{} -> buy {:.4f} usdt on price [{:.4f}]'.format(date, usdt_ammount, prices[2]))
+            mail_subject = '[GRID SCRIPT]: buy {:.4f} usdt on price [{:.4f}]'.format(usdt_ammount, prices[2])
             logs.append('Total trade fee: {:.4f} usdt.'.format(usdt_ammount * self.fee))
             self.money -= usdt_ammount
             self.token += buy_token_ammount
         else:
             self.sell(sell_token_ammount)
             logs.append('{} -> sell {:.4f} token on price [{:.4f}]'.format(date, sell_token_ammount, prices[1]))
+            mail_subject = '[GRID SCRIPT]: sell {:.4f} token on price [{:.4f}]'.format(sell_token_ammount, prices[1])
             logs.append('Total trade fee: {:.4f} token.'.format(sell_token_ammount * self.fee))
             self.money += usdt_ammount
             self.token -= sell_token_ammount
@@ -110,24 +113,5 @@ class GridStrat():
             logs.append(log)
         logs.append('-' * 15 + '\tTrade info end\t' + '-' * 15)
         _ = [logger.info(log) for log in logs]
-        mail_helper.sendmail('wzhwno1@163.com', 'New trade info for grid10 stat!', '\n'.join(logs))
+        mail_helper.sendmail(float(self.cfg.get('mail_reminder')), mail_subject, '\n'.join(logs))
 
-
-def oper(per):
-    # todo: buy and sell code base on trade depth
-    pass
-
-if __name__ == '__main__':
-    # online back test
-    grid = GridStrat(30.0, 2.5, 3.5, 10, oper, oper)
-    url = r'https://api.gateio.ws/api/v4/spot/tickers?currency_pair=eos_usdt'
-    while True:
-        try:
-            time.sleep(5)
-            data = requests.get(url).json()
-        except:
-            continue
-        else:
-            prices = [data[0]['highest_bid'], data[0]['highest_bid'], data[0]['lowest_ask']]
-            logger.info(prices)
-            grid.run_data(prices)
