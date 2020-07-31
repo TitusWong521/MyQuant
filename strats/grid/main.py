@@ -1,18 +1,21 @@
-from .grid import GridStrat
+from strats.grid.grid import GridStrat
 import requests
 import time
+import base64
 from utils.config_reader import Config
 from utils.logger import logger
+from utils.mailhelper import MailHelper
 
 
 def oper(per):
     # todo: buy and sell code base on trade depth
     pass
 
-
 # load config file
 cfg = Config()
-cfg.set_cfg_path('./app.config')
+cfg.set_cfg_path('./cfg/app.config')
+# init mail helper
+mail_helper = MailHelper(cfg.get('global.mail_name'), base64.b64decode(cfg.get('global.mail_pass')).decode('utf-8'))
 
 # online back test
 grid = GridStrat(float(cfg.get('grid.start_value')),
@@ -21,8 +24,9 @@ grid = GridStrat(float(cfg.get('grid.start_value')),
                  int(cfg.get('grid.parts')),
                  oper,
                  oper,
+                 mail_helper,
                  cfg.get('grid.mail_list'),
-                 token_name=cfg.get('grid.token', ''))
+                 token_name=cfg.get('grid.token', '').upper())
 url = r'https://api.gateio.ws/api/v4/spot/tickers?currency_pair=eos_usdt'
 while True:
     try:

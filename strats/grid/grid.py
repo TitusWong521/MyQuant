@@ -2,10 +2,9 @@
 import requests
 import time
 from utils.logger import logger
-from utils.mailhelper import mail_helper
 
 class GridStrat():
-    def __init__(self, start_value, lowest, highest, parts, buy, sell, mail_list, fee=0.002, token_name=''):
+    def __init__(self, start_value, lowest, highest, parts, buy, sell, mail_helper, mail_list, fee=0.002, token_name=''):
         self.start_value = float(start_value)
         self.money = float(start_value)
         self.token = 0.0
@@ -16,6 +15,7 @@ class GridStrat():
         self.parts = parts
         self.buy = buy
         self.sell = sell
+        self.mail_helper = mail_helper
         self.mail_list = mail_list
         self.fee = fee
         self.token_name = token_name if token_name != '' else 'Token'
@@ -44,6 +44,11 @@ class GridStrat():
         self.highest = highest
         self.parts = parts
         self.init_grid()
+        infos = ['Update grid at [lowest]: {}, [highest]: {}, [parts]: {}'.format(lowest, highest, parts), ]
+        for info in self.__str__():
+            infos.append(info)
+        logger.info('\n'.join(infos))
+        self.mail_helper.sendmail(self.mail_list, '[GRID SCRIPT]: Strat cfg update!', '\n'.join(infos))
 
     def run_data(self, prices, date=''):
         self.run_next(prices, date=date)
@@ -114,5 +119,5 @@ class GridStrat():
             logs.append(log)
         logs.append('-' * 15 + '\tTrade info end\t' + '-' * 15)
         _ = [logger.info(log) for log in logs]
-        mail_helper.sendmail(self.mail_list, mail_subject, '\n'.join(logs))
+        self.mail_helper.sendmail(self.mail_list, mail_subject, '\n'.join(logs))
 

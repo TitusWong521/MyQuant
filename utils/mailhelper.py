@@ -25,7 +25,6 @@ class MailHelper:
             print(ex.args)
 
 
-mail_helper = MailHelper('shaoz-he@outlook.com', 'W1992wen1031')
-
 if __name__ == "__main__":
+    mail_helper = MailHelper('shaoz-he@outlook.com', '**********')
     mail_helper.sendmail('wzhwno1@163.com,wzhwno2@163.com, ', 'Python发送邮件', '这只是一个测试邮件,请不要回复!')
