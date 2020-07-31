@@ -110,7 +110,7 @@ class GridStrat():
             logs.append(log)
         logs.append('-' * 15 + '\tTrade info end\t' + '-' * 15)
         _ = [logger.info(log) for log in logs]
-        mail_helper.sendmail('wzhwno1@163.com', 'New trade info for grid stat!', '\n'.join(logs))
+        mail_helper.sendmail('wzhwno1@163.com', 'New trade info for grid10 stat!', '\n'.join(logs))
 
 
 def oper(per):
