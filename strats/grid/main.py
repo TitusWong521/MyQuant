@@ -26,6 +26,9 @@ url = r'https://api.gateio.ws/api/v4/spot/tickers?currency_pair=eos_usdt'
 while True:
     try:
         time.sleep(int(cfg.get('timespan')))
+        if cfg.is_changed:
+            grid.update(float(cfg.get('lowest')), float(cfg.get('highest')), int(cfg.get('parts')))
+            cfg.is_changed = False
         data = requests.get(url).json()
     except:
         continue
