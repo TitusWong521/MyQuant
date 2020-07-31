@@ -5,7 +5,7 @@ from utils.logger import logger
 from utils.mailhelper import mail_helper
 
 class GridStrat():
-    def __init__(self, start_value, lowest, highest, parts, buy, sell, cfg, fee=0.002):
+    def __init__(self, start_value, lowest, highest, parts, buy, sell, mail_list, fee=0.002, token_name=''):
         self.start_value = float(start_value)
         self.money = float(start_value)
         self.token = 0.0
@@ -16,8 +16,9 @@ class GridStrat():
         self.parts = parts
         self.buy = buy
         self.sell = sell
-        self.cfg = cfg
+        self.mail_list = mail_list
         self.fee = fee
+        self.token_name = token_name if token_name != '' else 'Token'
         self.init_grid()
 
     def __str__(self):
@@ -27,7 +28,7 @@ class GridStrat():
         return '账户初始资产为:\t{:.4f}\t当前资产为:\t{:.4f}'.format(self.start_value, assets),\
                '当前收益率为:\t{:.2f} %'.format(earn_ratio),\
                '持仓比例为:\t{:.2f} %'.format(percent), \
-               '持仓详情: \t{:.4f} USDT\t{:.4f} TOKEN [last price: {:.4f}]'.format(self.money, self.token, self.last_price)
+               '持仓详情: \t{:.4f} USDT\t{:.4f} {} [last price: {:.4f}]'.format(self.money, self.token, self.token_name, self.last_price)
 
     def init_grid(self):
         price_part_value = (self.highest - self.lowest) / self.parts
@@ -104,14 +105,14 @@ class GridStrat():
             self.token += buy_token_ammount
         else:
             self.sell(sell_token_ammount)
-            logs.append('{} -> sell {:.4f} token on price [{:.4f}]'.format(date, sell_token_ammount, prices[1]))
-            mail_subject = '[GRID SCRIPT]: sell {:.4f} token on price [{:.4f}]'.format(sell_token_ammount, prices[1])
-            logs.append('Total trade fee: {:.4f} token.'.format(sell_token_ammount * self.fee))
+            logs.append('{} -> sell {:.4f} {} on price [{:.4f}]'.format(date, sell_token_ammount, self.token_name, prices[1]))
+            mail_subject = '[GRID SCRIPT]: sell {:.4f} {} on price [{:.4f}]'.format(sell_token_ammount, self.token_name, prices[1])
+            logs.append('Total trade fee: {:.4f} {}.'.format(sell_token_ammount * self.fee, self.token_name))
             self.money += usdt_ammount
             self.token -= sell_token_ammount
         for log in self.__str__():
             logs.append(log)
         logs.append('-' * 15 + '\tTrade info end\t' + '-' * 15)
         _ = [logger.info(log) for log in logs]
-        mail_helper.sendmail(float(self.cfg.get('mail_reminder')), mail_subject, '\n'.join(logs))
+        mail_helper.sendmail(self.mail_list, mail_subject, '\n'.join(logs))
 

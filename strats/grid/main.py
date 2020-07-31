@@ -15,19 +15,20 @@ cfg = Config()
 cfg.set_cfg_path('./app.config')
 
 # online back test
-grid = GridStrat(float(cfg.get('start_value')),
-                 float(cfg.get('lowest')),
-                 float(cfg.get('highest')),
-                 int(cfg.get('parts')),
+grid = GridStrat(float(cfg.get('grid.start_value')),
+                 float(cfg.get('grid.lowest')),
+                 float(cfg.get('grid.highest')),
+                 int(cfg.get('grid.parts')),
                  oper,
                  oper,
-                 cfg)
+                 cfg.get('grid.mail_list'),
+                 token_name=cfg.get('grid.token', ''))
 url = r'https://api.gateio.ws/api/v4/spot/tickers?currency_pair=eos_usdt'
 while True:
     try:
-        time.sleep(int(cfg.get('timespan')))
+        time.sleep(int(cfg.get('grid.timespan')))
         if cfg.is_changed:
-            grid.update(float(cfg.get('lowest')), float(cfg.get('highest')), int(cfg.get('parts')))
+            grid.update(float(cfg.get('grid.lowest')), float(cfg.get('grid.highest')), int(cfg.get('grid.parts')))
             cfg.is_changed = False
         data = requests.get(url).json()
     except:
