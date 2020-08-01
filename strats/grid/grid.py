@@ -40,6 +40,7 @@ class GridStrat():
         self.last_price_index = self.last_price_index if self.last_price_index != None else None
 
     def update(self, lowest, highest, parts):
+        # todo: 修改策略后，网格的持仓比例等显示异常，对应的买入卖出操作也需要审查
         self.lowest = lowest
         self.highest = highest
         self.parts = parts
