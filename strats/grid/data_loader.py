@@ -30,7 +30,7 @@ class DataLoader():
 
     def _get_gateio_data(self, token):
         close = self.gateio_spot_api.list_tickers(currency_pair='{}_usdt'.format(token.lower()))[0].last
-        order_book = self.gateio_spot_api.list_order_book(currency_pair='{}_usdt'.format(token.lower()))
+        order_book = self.gateio_spot_api.list_order_book(currency_pair='{}_usdt'.format(token.lower()), limit=15)
         depth = order_book.asks, order_book.bids
         return close, depth
 
