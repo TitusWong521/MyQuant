@@ -4,7 +4,7 @@ import time
 from utils.logger import logger
 
 class GridStrat():
-    def __init__(self, start_value, lowest, highest, parts, buy, sell, fee=0.002, token_name=''):
+    def __init__(self, start_value, lowest, highest, parts, trade, exchange, token_name, fee=0.002):
         self.start_value = float(start_value)
         self.money = float(start_value)
         self.token = 0.0
@@ -13,10 +13,10 @@ class GridStrat():
         self.lowest = float(lowest)
         self.highest = float(highest)
         self.parts = parts
-        self.buy = buy
-        self.sell = sell
+        self.trade = trade
         self.fee = fee
-        self.token_name = token_name if token_name != '' else 'Token'
+        self.exchange = exchange
+        self.token_name = token_name
         self.init_grid()
 
     def __str__(self):
@@ -26,7 +26,7 @@ class GridStrat():
         return '账户初始资产为:\t{:.4f}\t当前资产为:\t{:.4f}'.format(self.start_value, assets),\
                '当前收益率为:\t{:.2f} %'.format(earn_ratio),\
                '持仓比例为:\t{:.2f} %'.format(percent), \
-               '持仓详情: \t{:.4f} USDT\t{:.4f} {} [last price: {:.4f}]'.format(self.money, self.token, self.token_name,
+               '持仓详情: \t{:.4f} usdt\t{:.4f} {} [last price: {:.4f}]'.format(self.money, self.token, self.token_name,
                                                                             self.last_price)
 
     def init_grid(self):
@@ -101,14 +101,17 @@ class GridStrat():
         logs = []
         self.last_price = close
         logs.append('-' * 15 + '\tTrade info start\t' + '-' * 15)
-        usdt_ammount = abs(target * (self.money / (1 - self.percent_levels[self.last_price_index])))
+        if self.money == self.start_value:
+            usdt_ammount = abs(target * self.start_value)
+        else:
+            usdt_ammount = abs(target * (self.money / (1 - self.percent_levels[self.last_price_index])))
         if target > 0:
             mail_subject = '[GRID SCRIPT]: buy {:.4f} usdt arround price [{:.4f}]'.format(usdt_ammount, close)
             for price, volumn in depth[0]:
                 price, volumn = float(price), float(volumn)
                 order_ammount = price * volumn
                 if usdt_ammount > order_ammount:
-                    self.buy(price, volumn)
+                    self.trade(self.exchange, self.token_name, price, volumn, 'buy')
                     logs.append('{} -> buy {:.4f} usdt/ {:.4f} {} on price [{:.4f}]'
                                 .format(date, order_ammount, volumn, self.token_name, price))
                     logs.append('Total trade fee: {:.4f} usdt.'.format(order_ammount * self.fee))
@@ -119,7 +122,7 @@ class GridStrat():
                     continue
                 else:
                     order_volumn = round(usdt_ammount / price, 4)
-                    self.buy(price, order_volumn)
+                    self.trade(self.exchange, self.token_name, price, order_volumn, 'buy')
                     logs.append('{} -> buy {:.4f} usdt/ {:.4f} {} on price [{:.4f}]'
                                 .format(date, usdt_ammount, order_volumn, self.token_name, price))
                     logs.append('Total trade fee: {:.4f} usdt.'.format(usdt_ammount * self.fee))
@@ -134,7 +137,7 @@ class GridStrat():
                 price, volumn = float(price), float(volumn)
                 order_ammount = price * volumn
                 if usdt_ammount > order_ammount:
-                    self.sell(price, volumn)
+                    self.trade(self.exchange, self.token_name, price, volumn, 'sell')
                     logs.append('{} -> sell {:.4f} {}/ {:.4f} usdt on price [{:.4f}]'
                                 .format(date, volumn, self.token_name, order_ammount, price))
                     logs.append('Total trade fee: {:.4f} {}.'.format(volumn * self.fee, self.token_name))
@@ -145,7 +148,7 @@ class GridStrat():
                     continue
                 else:
                     order_volumn = round(usdt_ammount / price, 4)
-                    self.sell(price, order_volumn)
+                    self.trade(self.exchange, self.token_name, price, order_volumn, 'sell')
                     logs.append('{} -> sell {:.4f} {}/ {:.4f} usdt on price [{:.4f}]'
                                 .format(date, order_volumn, self.token_name, usdt_ammount, price))
                     logs.append('Total trade fee: {:.4f} {}.'.format(order_volumn * self.fee, self.token_name))

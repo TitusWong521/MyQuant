@@ -8,11 +8,6 @@ from utils.config_reader import Config
 from utils.logger import logger
 from utils.mailhelper import MailHelper
 
-
-def oper(per, per1):
-    # todo: buy and sell code base on trade depth
-    pass
-
 # load config file
 cfg = Config()
 cfg.set_cfg_path('./cfg/app.config')
@@ -36,9 +31,9 @@ grid = GridStrat(float(cfg.get('grid.start_value')),
                  float(cfg.get('grid.lowest')),
                  float(cfg.get('grid.highest')),
                  int(cfg.get('grid.parts')),
-                 oper,
-                 oper,
-                 token_name=cfg.get('grid.token', '').upper())
+                 data_loader.trade,
+                 cfg.get('grid.platform').lower(),
+                 cfg.get('grid.token', '').lower())
 while True:
     try:
         time.sleep(int(cfg.get('grid.timespan')))

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 import gate_api
+import traceback
 
 
 class DataLoader():
@@ -19,6 +20,28 @@ class DataLoader():
                 pass
             else:
                 raise Exception('Unsupported exchange!')
+
+    def trade(self, exchange, token, price, volumn, buy_or_sell):
+        # if exchange == 'gateio':
+        #     return self._gateio_trade(token, price, volumn, buy_or_sell)
+        # elif exchange == 'huobipro':
+        #     return self._huobipro_trade(token, price, volumn, buy_or_sell)
+        # else:
+        #     raise Exception('Unsupported exchange!')
+        return 0
+
+    def _gateio_trade(self, token, price, volumn, buy_or_sell):
+        currency_pair = '{}_usdt'.format(token.lower())
+        order = gate_api.Order(currency_pair=currency_pair, side=buy_or_sell, amount=volumn, price=price)
+        try:
+            result = self.gateio_spot_api.create_order(order)
+            print(result)
+        except:
+            print(traceback.format_exc())
+            return 'fail'
+
+    def _huobipro_trade(self, token, price, volumn, is_buy):
+        pass
 
     def get_data(self, exchange, token):
         if exchange == 'gateio':
