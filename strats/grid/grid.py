@@ -4,7 +4,7 @@ import time
 from utils.logger import logger
 
 class GridStrat():
-    def __init__(self, start_value, lowest, highest, parts, buy, sell, mail_helper, mail_list, fee=0.002, token_name=''):
+    def __init__(self, start_value, lowest, highest, parts, buy, sell, fee=0.002, token_name=''):
         self.start_value = float(start_value)
         self.money = float(start_value)
         self.token = 0.0
@@ -15,8 +15,6 @@ class GridStrat():
         self.parts = parts
         self.buy = buy
         self.sell = sell
-        self.mail_helper = mail_helper
-        self.mail_list = mail_list
         self.fee = fee
         self.token_name = token_name if token_name != '' else 'Token'
         self.init_grid()
@@ -28,7 +26,8 @@ class GridStrat():
         return '账户初始资产为:\t{:.4f}\t当前资产为:\t{:.4f}'.format(self.start_value, assets),\
                '当前收益率为:\t{:.2f} %'.format(earn_ratio),\
                '持仓比例为:\t{:.2f} %'.format(percent), \
-               '持仓详情: \t{:.4f} USDT\t{:.4f} {} [last price: {:.4f}]'.format(self.money, self.token, self.token_name, self.last_price)
+               '持仓详情: \t{:.4f} USDT\t{:.4f} {} [last price: {:.4f}]'.format(self.money, self.token, self.token_name,
+                                                                            self.last_price)
 
     def init_grid(self):
         price_part_value = (self.highest - self.lowest) / self.parts
@@ -49,28 +48,28 @@ class GridStrat():
         for info in self.__str__():
             infos.append(info)
         logger.info('\n'.join(infos))
-        self.mail_helper.sendmail(self.mail_list, '[GRID SCRIPT]: Strat cfg update!', '\n'.join(infos))
+        return '[GRID SCRIPT]: Strat cfg update!', '\n'.join(infos)
 
-    def run_data(self, prices, date=''):
-        self.run_next(prices, date=date)
+    def run_data(self, data, date=''):
+        return self.run_next(data, date=date)
 
     def run_datas(self, datas, dates=None):
         if dates:
-            for prices, date in zip(datas, dates):
-                self.run_next(prices, date)
+            for data, date in zip(datas, dates):
+                self.run_next(data, date)
         else:
-            for prices in datas:
-                self.run_next(prices, )
+            for data in datas:
+                self.run_next(data, )
 
-    def run_next(self, prices, date=''):
+    def run_next(self, data, date=''):
         date = date if date != '' else time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(time.time()))
-        prices = [float(value) for value in prices]
+        close, depth = data
         if self.last_price_index == None:
             for i in range(len(self.price_levels)):
-                if prices[0] > self.price_levels[i]:
+                if float(close) > self.price_levels[i]:
                     self.last_price_index = i
-                    self.order_target_percent(prices, target=self.percent_levels[self.last_price_index], date=date)
-                    return
+                    return True, self.order_target_percent(
+                        float(close), depth, target=self.percent_levels[self.last_price_index], date=date)
         else:
             signal = False
             cur_percent = self.percent_levels[self.last_price_index]
@@ -82,43 +81,81 @@ class GridStrat():
                 if self.last_price_index < len(self.price_levels) - 1:
                     lower = self.price_levels[self.last_price_index + 1]
                 # 还不是最轻仓，继续涨，就再卖一档
-                if upper != None and prices[0] > upper:
+                if upper != None and float(close) > upper:
                     self.last_price_index = self.last_price_index - 1
                     signal = True
                     continue
                 # 还不是最重仓，继续跌，再买一档
-                if lower != None and prices[0] < lower:
+                if lower != None and float(close) < lower:
                     self.last_price_index = self.last_price_index + 1
                     signal = True
                     continue
                 break
             if signal:
-                self.order_target_percent(prices, target=self.percent_levels[self.last_price_index] - cur_percent, date=date)
+                return True, self.order_target_percent(
+                    float(close), depth, target=self.percent_levels[self.last_price_index] - cur_percent, date=date)
+            else:
+                return False, []
 
-    def order_target_percent(self, prices, target, date=''):
+    def order_target_percent(self, close, depth, target, date=''):
         logs = []
-        self.last_price = prices[0]
+        self.last_price = close
         logs.append('-' * 15 + '\tTrade info start\t' + '-' * 15)
-        usdt_ammount = abs(target * self.start_value)
-        buy_token_ammount = abs(target * self.start_value) / prices[2]
-        sell_token_ammount = abs(target * self.start_value) / prices[1]
+        usdt_ammount = abs(target * (self.money / (1 - self.percent_levels[self.last_price_index])))
         if target > 0:
-            self.buy(usdt_ammount)
-            logs.append('{} -> buy {:.4f} usdt on price [{:.4f}]'.format(date, usdt_ammount, prices[2]))
-            mail_subject = '[GRID SCRIPT]: buy {:.4f} usdt on price [{:.4f}]'.format(usdt_ammount, prices[2])
-            logs.append('Total trade fee: {:.4f} usdt.'.format(usdt_ammount * self.fee))
-            self.money -= usdt_ammount
-            self.token += buy_token_ammount
+            mail_subject = '[GRID SCRIPT]: buy {:.4f} usdt arround price [{:.4f}]'.format(usdt_ammount, close)
+            for price, volumn in depth[0]:
+                price, volumn = float(price), float(volumn)
+                order_ammount = price * volumn
+                if usdt_ammount > order_ammount:
+                    self.buy(price, volumn)
+                    logs.append('{} -> buy {:.4f} usdt/ {:.4f} {} on price [{:.4f}]'
+                                .format(date, order_ammount, volumn, self.token_name, price))
+                    logs.append('Total trade fee: {:.4f} usdt.'.format(order_ammount * self.fee))
+                    usdt_ammount -= order_ammount
+                    self.token += volumn
+                    self.money -= order_ammount
+                    self.money -= order_ammount * self.fee
+                    continue
+                else:
+                    order_volumn = round(usdt_ammount / price, 4)
+                    self.buy(price, order_volumn)
+                    logs.append('{} -> buy {:.4f} usdt/ {:.4f} {} on price [{:.4f}]'
+                                .format(date, usdt_ammount, order_volumn, self.token_name, price))
+                    logs.append('Total trade fee: {:.4f} usdt.'.format(usdt_ammount * self.fee))
+                    self.token += order_volumn
+                    self.money -= usdt_ammount
+                    self.money -= usdt_ammount * self.fee
+                    break
         else:
-            self.sell(sell_token_ammount)
-            logs.append('{} -> sell {:.4f} {} on price [{:.4f}]'.format(date, sell_token_ammount, self.token_name, prices[1]))
-            mail_subject = '[GRID SCRIPT]: sell {:.4f} {} on price [{:.4f}]'.format(sell_token_ammount, self.token_name, prices[1])
-            logs.append('Total trade fee: {:.4f} {}.'.format(sell_token_ammount * self.fee, self.token_name))
-            self.money += usdt_ammount
-            self.token -= sell_token_ammount
+            mail_subject = '[GRID SCRIPT]: sell {:.4f} usdt of {} arround price [{:.4f}]'\
+                .format(usdt_ammount, self.token_name, close)
+            for price, volumn in depth[1]:
+                price, volumn = float(price), float(volumn)
+                order_ammount = price * volumn
+                if usdt_ammount > order_ammount:
+                    self.sell(price, volumn)
+                    logs.append('{} -> sell {:.4f} {}/ {:.4f} usdt on price [{:.4f}]'
+                                .format(date, volumn, self.token_name, order_ammount, price))
+                    logs.append('Total trade fee: {:.4f} {}.'.format(volumn * self.fee, self.token_name))
+                    usdt_ammount -= order_ammount
+                    self.token -= volumn
+                    self.token -= volumn * self.fee
+                    self.money += order_ammount
+                    continue
+                else:
+                    order_volumn = round(usdt_ammount / price, 4)
+                    self.sell(price, order_volumn)
+                    logs.append('{} -> sell {:.4f} {}/ {:.4f} usdt on price [{:.4f}]'
+                                .format(date, order_volumn, self.token_name, usdt_ammount, price))
+                    logs.append('Total trade fee: {:.4f} {}.'.format(order_volumn * self.fee, self.token_name))
+                    self.token -= order_volumn
+                    self.token -= order_volumn * self.fee
+                    self.money += usdt_ammount
+                    break
         for log in self.__str__():
             logs.append(log)
-        logs.append('-' * 15 + '\tTrade info end\t' + '-' * 15)
+        logs.append('-' * 10 + '\tTrade info end\t' + '-' * 10)
         _ = [logger.info(log) for log in logs]
-        self.mail_helper.sendmail(self.mail_list, mail_subject, '\n'.join(logs))
+        return mail_subject, '\n'.join(logs)
 

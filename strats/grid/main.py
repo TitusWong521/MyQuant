@@ -9,7 +9,7 @@ from utils.logger import logger
 from utils.mailhelper import MailHelper
 
 
-def oper(per):
+def oper(per, per1):
     # todo: buy and sell code base on trade depth
     pass
 
@@ -38,19 +38,22 @@ grid = GridStrat(float(cfg.get('grid.start_value')),
                  int(cfg.get('grid.parts')),
                  oper,
                  oper,
-                 mail_helper,
-                 cfg.get('grid.mail_list'),
                  token_name=cfg.get('grid.token', '').upper())
 while True:
     try:
         time.sleep(int(cfg.get('grid.timespan')))
         if cfg.is_changed:
-            grid.update(float(cfg.get('grid.lowest')), float(cfg.get('grid.highest')), int(cfg.get('grid.parts')))
+            mail_subject, mail_content = grid.update(float(cfg.get('grid.lowest')), float(cfg.get('grid.highest')),
+                                                     int(cfg.get('grid.parts')))
             cfg.is_changed = False
-        close, depth = data_loader.get_data(cfg.get('grid.platform'), cfg.get('grid.token'))
+            if int(cfg.get('grid.mail_reminder')):
+                mail_helper.sendmail(cfg.get('grid.mail_list'), mail_subject, mail_content)
+        data = data_loader.get_data(cfg.get('grid.platform'), cfg.get('grid.token'))
     except:
         logger.error(traceback.format_exc())
         continue
     else:
-        # todo: modify grid.run_data interface
-        grid.run_data(close, depth)
+        flag, mail = grid.run_data(data)
+        if int(cfg.get('grid.mail_reminder')) and flag:
+            mail_helper.sendmail(cfg.get('grid.mail_list'), mail[0], mail[1])
+
