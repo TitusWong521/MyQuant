@@ -7,6 +7,7 @@ import traceback
 class DataLoader():
     def __init__(self, api_keys):
         self.api_keys = api_keys
+        self.price_base = 3.07
         self.init_apis()
 
     def init_apis(self):
@@ -48,6 +49,16 @@ class DataLoader():
             return self._get_gateio_data(token)
         elif exchange == 'huobipro':
             return self._get_huobipro_data(token)
+        elif exchange == 'backtest':
+            if self.price_base > 4.5:
+                span = -0.5
+            elif self.price_base < 1.5:
+                span = 0.5
+            else:
+                import random
+                span = random.choice([0.05, -0.05])
+            self.price_base += span
+            return self.price_base, [[[self.price_base, 10000], ], [[self.price_base, 10000], ]]
         else:
             raise Exception('Unsupported exchange!')
 
