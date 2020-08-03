@@ -9,6 +9,7 @@ class GridStrat():
         self.token = 0.0
         self.last_price = None
         self.last_price_index = None
+        self.last_percent = 0.0
         self.lowest = float(lowest)
         self.highest = float(highest)
         self.parts = parts
@@ -19,7 +20,7 @@ class GridStrat():
         self.init_grid()
 
     def __str__(self):
-        percent = self.percent_levels[self.last_price_index] * 100 if self.last_price_index != None else 0.00
+        percent = int(self.last_percent * 100)
         assets = self.money + self.token * self.last_price
         earn_ratio = 100 * (assets - self.start_value) / self.start_value
         return '账户初始资产为:\t{:.4f}\t当前资产为:\t{:.4f}'.format(self.start_value, assets),\
@@ -37,10 +38,10 @@ class GridStrat():
         self.percent_levels[-1] = 1.0000
 
     def update(self, lowest, highest, parts):
-        # todo: 修改策略后，网格的持仓比例等显示异常，对应的买入卖出操作也需要审查
         self.lowest = lowest
         self.highest = highest
         self.parts = parts
+        self.last_price_index = None
         self.init_grid()
         infos = ['Update grid at [lowest]: {}, [highest]: {}, [parts]: {}'.format(lowest, highest, parts), ]
         for info in self.__str__():
@@ -62,15 +63,15 @@ class GridStrat():
     def run_next(self, data, date=''):
         date = date if date != '' else time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(time.time()))
         close, depth = data
+        print('close', close)
         if self.last_price_index == None:
             for i in range(len(self.price_levels)):
                 if float(close) > self.price_levels[i]:
                     self.last_price_index = i
-                    target = self.percent_levels[self.last_price_index]
+                    target = self.percent_levels[self.last_price_index] - self.last_percent
                     if target != 0.0:
                         return True, self.order_target_percent(float(close), depth, target, date=date)
         else:
-            cur_percent = self.percent_levels[self.last_price_index]
             signal = False
             while True:
                 upper = None
@@ -91,13 +92,14 @@ class GridStrat():
                     continue
                 break
             if signal:
-                target = self.percent_levels[self.last_price_index] - cur_percent
+                target = self.percent_levels[self.last_price_index] - self.last_percent
                 if target != 0.0:
                     return True, self.order_target_percent(float(close), depth, target, date=date)
             else:
                 return False, []
 
     def order_target_percent(self, close, depth, target, date=''):
+        print('target', target)
         logs = []
         self.last_price = close
         logs.append('-' * 15 + '\tTrade info start\t' + '-' * 15)
@@ -106,7 +108,7 @@ class GridStrat():
             if self.percent_levels[self.last_price_index] - target == 0:
                 usdt_ammount = target * self.money
             else:
-                usdt_ammount = round(target * self.money / (1 - self.percent_levels[self.last_price_index] + target), 4)
+                usdt_ammount = round(target * self.money / (1 - self.last_percent), 4)
             mail_subject = '[GRID SCRIPT]: buy {:.4f} usdt (~ {:.4f} {}) arround price [{:.4f}]'\
                 .format(usdt_ammount, usdt_ammount/close, self.token_name, close)
             for price, volumn in depth[0]:
@@ -126,7 +128,7 @@ class GridStrat():
                 if is_trade_done:
                     break
         else:
-            token_ammount = abs(target * self.token / (self.percent_levels[self.last_price_index] - target))
+            token_ammount = abs(target * self.token / self.last_percent)
             mail_subject = '[GRID SCRIPT]: sell {:.4f} {} (~ {:.4f} usdt) arround price [{:.4f}]'\
                 .format(token_ammount, self.token_name, token_ammount * close, close)
             for price, volumn in depth[1]:
@@ -145,6 +147,7 @@ class GridStrat():
                 self.money += order_volumn * price * (1 - self.fee)
                 if is_trade_done:
                     break
+        self.last_percent += target
         for log in self.__str__():
             logs.append(log)
         logs.append('-' * 15 + '\tTrade info end\t' + '-' * 15)
