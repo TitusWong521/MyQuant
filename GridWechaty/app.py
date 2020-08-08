@@ -1,5 +1,6 @@
 import asyncio
 import os
+import dill
 from typing import Optional, Union
 from wechaty import Wechaty, Contact
 from wechaty.user import Message, Room
@@ -36,33 +37,42 @@ api_keys = {
 }
 data_loader = DataLoader(api_keys)
 # online back test
-grid = GridStrat(float(cfg.get('grid.start_value')),
-                 float(cfg.get('grid.lowest')),
-                 float(cfg.get('grid.highest')),
-                 int(cfg.get('grid.parts')),
-                 data_loader.trade,
-                 cfg.get('grid.platform').lower(),
-                 cfg.get('grid.token', '').lower())
+grid_cache = './utils/grid_cache.pkl'
+try:
+    grid = dill.load(open(grid_cache, 'rb'))
+except:
+    logger.error(traceback.format_exc())
+    grid = GridStrat(float(cfg.get('grid.start_value')),
+                     float(cfg.get('grid.lowest')),
+                     float(cfg.get('grid.highest')),
+                     int(cfg.get('grid.parts')),
+                     data_loader.trade,
+                     cfg.get('grid.platform').lower(),
+                     cfg.get('grid.token', '').lower())
+grid.trade = data_loader.trade
 
 def get_time():
     return time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(time.time()))
 
-async def on_scan(status, qrcode):
-    print('Scan QR Code to login: {}\nhttps://wechaty.github.io/qrcode/{}'.format(status, qrcode))
+async def on_scan(status, qrcode, timestamp):
+    print('status: {}'.format(status))
+    print('qrcode: {}'.format(qrcode))
+    print('timestamp: {}'.format(timestamp))
+    prompt = 'Scan QR Code to login: {}\nhttps://wechaty.github.io/qrcode/{}'.format(status, qrcode)
     text = 'Wechat scaning...'
-    desp = '[{}]: wechaty logging by scaning...'.format(get_time())
+    desp = '[{}]: {}'.format(get_time(), prompt)
     requests.get(url.format(text, desp))
 
 async def on_login(user):
-    print('User {} logged in.'.format(user))
+    prompt = 'User {} logged in.'.format(user)
     text = 'Wechaty logged in'
-    desp = '[{}]: wechaty logged in.'.format(get_time())
+    desp = '[{}]: {}'.format(get_time(), prompt)
     requests.get(url.format(text, desp))
 
 async def on_logout(user):
-    print('User {} logged out'.format(user))
+    prompt = 'User {} logged out'.format(user)
     text = 'Wechaty abnormal logout!'
-    desp = '[{}]: Abnormal logout, pls re-login asap.'.format(get_time())
+    desp = '[{}]: {}, pls re-login asap.'.format(get_time(), prompt)
     requests.get(url.format(text, desp))
 
 async def on_error(error):
@@ -75,10 +85,24 @@ async def on_room_join(room, inviteeList, inviter, timestamp):
         conversation: Union[Room, Contact] = room
         for invitee in inviteeList:
             await conversation.ready()
-            await conversation.say('欢迎<{}>进群，感谢<{}>的邀请!'.format(invitee.name(), inviter.name()))
+            await conversation.say('欢迎<{}>进群，感谢<{}>的邀请！'.format(invitee.payload.name, inviter.payload.name))
             target_friend = bot.Contact.load('wzhwno1')
-            await target_friend.say('<{}>已于<{}>邀请<{}>进入群聊<{}>!'
-                                    .format(inviter.name(), timestamp, invitee.name(), room.payload.topic))
+            await target_friend.say('<{}>已于<{}>被<{}>邀请进入群聊<{}>！'
+                                    .format(invitee.payload.name, timestamp, inviter.payload.name, room.payload.topic))
+
+async def on_room_leave(room, removeeList, remover, timestamp):
+    print('room: {}'.format(str(room)))
+    print('removeeList: {}'.format(str(removeeList)))
+    print('remover: {}'.format(str(remover)))
+    print('timestamp: {}'.format(str(timestamp)))
+    if room.payload.topic in ['ChatOps - Donut', '量化动态播报']:
+        conversation: Union[Room, Contact] = room
+        for removee in removeeList:
+            await conversation.ready()
+            await conversation.say('<{}>已退群，期待下次再见！'.format(removee.payload.name))
+            target_friend = bot.Contact.load('wzhwno1')
+            await target_friend.say('<{}>已于<{}>退出群聊<{}>！'
+                                    .format(removee.payload.name, timestamp, room.payload.topic))
 
 async def on_message(msg: Message):
     from_contact = msg.talker()
@@ -97,6 +121,7 @@ async def wechat():
     bot.on('login', on_login)
     bot.on('message', on_message)
     bot.on('room-join', on_room_join)
+    bot.on('room-leave', on_room_leave)
     bot.on('logout', on_logout)
     bot.on('error', on_error)
     await bot.start()
@@ -104,36 +129,38 @@ async def wechat():
 async def run_grid():
     try:
         if cfg.is_changed:
-            mail_subject, mail_content = grid.update(float(cfg.get('grid.lowest')), float(cfg.get('grid.highest')),
+            mail_content = grid.update(float(cfg.get('grid.lowest')), float(cfg.get('grid.highest')),
                                                      int(cfg.get('grid.parts')))
             cfg.is_changed = False
             if int(cfg.get('grid.mail_reminder')):
-                mail_helper.sendmail(cfg.get('grid.mail_list'), mail_subject, mail_content)
+                mail_helper.sendmail(cfg.get('grid.mail_list'), '[GRID SCRIPT]: Strat cfg update!', mail_content)
             if int(cfg.get('grid.wechat_reminder')):
                 target_friend = bot.Contact.load('wzhwno1')
-                await target_friend.say('{}\n{}'.format(mail_subject, mail_content))
+                await target_friend.say(mail_content)
                 room = bot.Room.load("18887123951@chatroom")
                 await room.ready()
                 conversation: Union[Room, Contact] = room
                 await conversation.ready()
-                await conversation.say('{}\n{}'.format(mail_subject, mail_content))
+                await conversation.say(mail_content)
         data = data_loader.get_data(cfg.get('grid.platform'), cfg.get('grid.token'))
-        print(data[0])
     except:
         logger.error(traceback.format_exc())
     else:
         flag, mail = grid.run_data(data)
         if flag:
+            grid.trade = None
+            dill.dump(grid, open(grid_cache, 'wb'))
+            grid.trade = data_loader.trade
             if int(cfg.get('grid.mail_reminder')):
-                mail_helper.sendmail(cfg.get('grid.mail_list'), mail[0], mail[1])
+                mail_helper.sendmail(cfg.get('grid.mail_list'), 'GRID SCRIPT NEW TRADE', mail)
             if int(cfg.get('grid.wechat_reminder')):
                 target_friend = bot.Contact.load('wzhwno1')
-                await target_friend.say('{}\n{}'.format(mail[0], mail[1]))
+                await target_friend.say(mail)
                 room = bot.Room.load("18887123951@chatroom")
                 await room.ready()
                 conversation: Union[Room, Contact] = room
                 await conversation.ready()
-                await conversation.say('{}\n{}'.format(mail[0], mail[1]))
+                await conversation.say(mail)
 
 async def grid_schedule():
     scheduler = AsyncIOScheduler()
