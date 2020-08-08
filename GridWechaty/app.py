@@ -70,14 +70,15 @@ async def on_error(error):
     desp = '[{}]: Wechaty error - [{}], pls check.'.format(get_time(), str(error))
     requests.get(url.format(text, desp))
 
-async def on_room_join(room, inviteeList, inviter, _):
-    print(room, inviteeList, inviter, _)
+async def on_room_join(room, inviteeList, inviter, timestamp):
     if room.payload.topic in ['ChatOps - Donut', '量化动态播报']:
         conversation: Union[Room, Contact] = room
-        await conversation.ready()
-        await conversation.say('欢迎{}进群，感谢{}的邀请!'.format(str(inviteeList), str(inviter)))
-        target_friend = bot.Contact.load('wzhwno1')
-        await target_friend.say('欢迎{}进群<{}>，感谢{}的邀请!'.format(str(inviteeList), room.payload.topic, str(inviter)))
+        for invitee in inviteeList:
+            await conversation.ready()
+            await conversation.say('欢迎<{}>进群，感谢<{}>的邀请!'.format(invitee.name(), inviter.name()))
+            target_friend = bot.Contact.load('wzhwno1')
+            await target_friend.say('<{}>已于<{}>邀请<{}>进入群聊<{}>!'
+                                    .format(inviter.name(), timestamp, invitee.name(), room.payload.topic))
 
 async def on_message(msg: Message):
     from_contact = msg.talker()
