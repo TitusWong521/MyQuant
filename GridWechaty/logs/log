@@ -1,0 +1,115 @@
+2020-08-07 14:16:10 [config_reader] INFO [23] 正在初始化配置文件...
+2020-08-07 14:16:10 [config_reader] INFO [47] 正在重新加载配置...
+2020-08-07 14:16:10 [config_reader] INFO [34] 正在设置配置文件监控...
+2020-08-07 14:16:35 [grid_strat] INFO [154] ---------------	Trade info start	---------------
+2020-08-07 14:16:35 [grid_strat] INFO [154] 2020/08/07 14:16:35 -> buy 120.0001 usdt (~ 38.3387 eos) on price [3.1300]
+2020-08-07 14:16:35 [grid_strat] INFO [154] Total trade fee: 0.2400 usdt.
+2020-08-07 14:16:35 [grid_strat] INFO [154] 账户初始资产为:	300.0000	当前资产为:	299.7485
+2020-08-07 14:16:35 [grid_strat] INFO [154] 当前收益率为:	-0.08 %
+2020-08-07 14:16:35 [grid_strat] INFO [154] 持仓比例为:	40.00 %
+2020-08-07 14:16:35 [grid_strat] INFO [154] 持仓详情: 	179.9999 usdt	38.2620 eos [last price: 3.1297]
+2020-08-07 14:16:35 [grid_strat] INFO [154] ---------------	Trade info end	---------------
+2020-08-07 16:16:27 [grid_strat] INFO [154] ---------------	Trade info start	---------------
+2020-08-07 16:16:27 [grid_strat] INFO [154] 2020/08/07 16:16:27 -> sell 4.7828 eos (~ 15.0700 usdt) on price [3.1509]
+2020-08-07 16:16:27 [grid_strat] INFO [154] Total trade fee: 0.0096 eos.
+2020-08-07 16:16:27 [grid_strat] INFO [154] 账户初始资产为:	300.0000	当前资产为:	300.5831
+2020-08-07 16:16:27 [grid_strat] INFO [154] 当前收益率为:	0.19 %
+2020-08-07 16:16:27 [grid_strat] INFO [154] 持仓比例为:	35.00 %
+2020-08-07 16:16:27 [grid_strat] INFO [154] 持仓详情: 	195.0397 usdt	33.4793 eos [last price: 3.1525]
+2020-08-07 16:16:27 [grid_strat] INFO [154] ---------------	Trade info end	---------------
+2020-08-07 16:51:58 [grid_strat] INFO [154] ---------------	Trade info start	---------------
+2020-08-07 16:51:58 [grid_strat] INFO [154] 2020/08/07 16:51:58 -> sell 4.7828 eos (~ 15.3048 usdt) on price [3.2000]
+2020-08-07 16:51:58 [grid_strat] INFO [154] Total trade fee: 0.0096 eos.
+2020-08-07 16:51:58 [grid_strat] INFO [154] 账户初始资产为:	300.0000	当前资产为:	302.1686
+2020-08-07 16:51:58 [grid_strat] INFO [154] 当前收益率为:	0.72 %
+2020-08-07 16:51:58 [grid_strat] INFO [154] 持仓比例为:	30.00 %
+2020-08-07 16:51:58 [grid_strat] INFO [154] 持仓详情: 	210.3139 usdt	28.6965 eos [last price: 3.2009]
+2020-08-07 16:51:58 [grid_strat] INFO [154] ---------------	Trade info end	---------------
+2020-08-07 22:17:28 [grid_strat] INFO [154] ---------------	Trade info start	---------------
+2020-08-07 22:17:28 [grid_strat] INFO [154] 2020/08/07 22:17:28 -> buy 15.0225 usdt (~ 4.7821 eos) on price [3.1414]
+2020-08-07 22:17:28 [grid_strat] INFO [154] Total trade fee: 0.0300 usdt.
+2020-08-07 22:17:28 [grid_strat] INFO [154] 账户初始资产为:	300.0000	当前资产为:	300.1466
+2020-08-07 22:17:28 [grid_strat] INFO [154] 当前收益率为:	0.05 %
+2020-08-07 22:17:28 [grid_strat] INFO [154] 持仓比例为:	35.00 %
+2020-08-07 22:17:28 [grid_strat] INFO [154] 持仓详情: 	195.2914 usdt	33.4691 eos [last price: 3.1329]
+2020-08-07 22:17:28 [grid_strat] INFO [154] ---------------	Trade info end	---------------
+2020-08-08 01:01:12 [grid_strat] INFO [154] ---------------	Trade info start	---------------
+2020-08-08 01:01:12 [grid_strat] INFO [154] 2020/08/08 01:01:12 -> buy 15.0225 usdt (~ 4.8444 eos) on price [3.1010]
+2020-08-08 01:01:12 [grid_strat] INFO [154] Total trade fee: 0.0300 usdt.
+2020-08-08 01:01:12 [grid_strat] INFO [154] 账户初始资产为:	300.0000	当前资产为:	298.9187
+2020-08-08 01:01:12 [grid_strat] INFO [154] 当前收益率为:	-0.36 %
+2020-08-08 01:01:12 [grid_strat] INFO [154] 持仓比例为:	40.00 %
+2020-08-08 01:01:12 [grid_strat] INFO [154] 持仓详情: 	180.2689 usdt	38.3038 eos [last price: 3.0976]
+2020-08-08 01:01:12 [grid_strat] INFO [154] ---------------	Trade info end	---------------
+2020-08-08 01:26:57 [grid_strat] INFO [154] ---------------	Trade info start	---------------
+2020-08-08 01:26:57 [grid_strat] INFO [154] 2020/08/08 01:26:57 -> buy 15.0223 usdt (~ 4.9469 eos) on price [3.0367]
+2020-08-08 01:26:57 [grid_strat] INFO [154] Total trade fee: 0.0300 usdt.
+2020-08-08 01:26:57 [grid_strat] INFO [154] 账户初始资产为:	300.0000	当前资产为:	296.4911
+2020-08-08 01:26:57 [grid_strat] INFO [154] 当前收益率为:	-1.17 %
+2020-08-08 01:26:57 [grid_strat] INFO [154] 持仓比例为:	45.00 %
+2020-08-08 01:26:57 [grid_strat] INFO [154] 持仓详情: 	165.2467 usdt	43.2408 eos [last price: 3.0352]
+2020-08-08 01:26:57 [grid_strat] INFO [154] ---------------	Trade info end	---------------
+2020-08-08 01:30:57 [grid_strat] INFO [154] ---------------	Trade info start	---------------
+2020-08-08 01:30:57 [grid_strat] INFO [154] 2020/08/08 01:30:57 -> buy 15.0223 usdt (~ 5.0582 eos) on price [2.9699]
+2020-08-08 01:30:57 [grid_strat] INFO [154] Total trade fee: 0.0300 usdt.
+2020-08-08 01:30:57 [grid_strat] INFO [154] 账户初始资产为:	300.0000	当前资产为:	293.7098
+2020-08-08 01:30:57 [grid_strat] INFO [154] 当前收益率为:	-2.10 %
+2020-08-08 01:30:57 [grid_strat] INFO [154] 持仓比例为:	50.00 %
+2020-08-08 01:30:57 [grid_strat] INFO [154] 持仓详情: 	150.2243 usdt	48.2889 eos [last price: 2.9714]
+2020-08-08 01:30:57 [grid_strat] INFO [154] ---------------	Trade info end	---------------
+2020-08-08 01:31:12 [grid_strat] INFO [154] ---------------	Trade info start	---------------
+2020-08-08 01:31:12 [grid_strat] INFO [154] 2020/08/08 01:31:12 -> buy 15.0225 usdt (~ 5.0860 eos) on price [2.9537]
+2020-08-08 01:31:12 [grid_strat] INFO [154] Total trade fee: 0.0300 usdt.
+2020-08-08 01:31:12 [grid_strat] INFO [154] 账户初始资产为:	300.0000	当前资产为:	292.4675
+2020-08-08 01:31:12 [grid_strat] INFO [154] 当前收益率为:	-2.51 %
+2020-08-08 01:31:12 [grid_strat] INFO [154] 持仓比例为:	55.00 %
+2020-08-08 01:31:12 [grid_strat] INFO [154] 持仓详情: 	135.2018 usdt	53.3647 eos [last price: 2.9470]
+2020-08-08 01:31:12 [grid_strat] INFO [154] ---------------	Trade info end	---------------
+2020-08-08 01:32:43 [grid_strat] INFO [154] ---------------	Trade info start	---------------
+2020-08-08 01:32:43 [grid_strat] INFO [154] 2020/08/08 01:32:43 -> buy 30.0447 usdt (~ 10.5836 eos) on price [2.8388]
+2020-08-08 01:32:43 [grid_strat] INFO [154] Total trade fee: 0.0601 usdt.
+2020-08-08 01:32:43 [grid_strat] INFO [154] 账户初始资产为:	300.0000	当前资产为:	286.6717
+2020-08-08 01:32:43 [grid_strat] INFO [154] 当前收益率为:	-4.44 %
+2020-08-08 01:32:43 [grid_strat] INFO [154] 持仓比例为:	65.00 %
+2020-08-08 01:32:43 [grid_strat] INFO [154] 持仓详情: 	105.1571 usdt	63.9271 eos [last price: 2.8394]
+2020-08-08 01:32:43 [grid_strat] INFO [154] ---------------	Trade info end	---------------
+2020-08-08 01:32:57 [grid_strat] INFO [154] ---------------	Trade info start	---------------
+2020-08-08 01:32:57 [grid_strat] INFO [154] 2020/08/08 01:32:57 -> buy 15.0225 usdt (~ 5.3821 eos) on price [2.7912]
+2020-08-08 01:32:57 [grid_strat] INFO [154] Total trade fee: 0.0300 usdt.
+2020-08-08 01:32:57 [grid_strat] INFO [154] 账户初始资产为:	300.0000	当前资产为:	282.5209
+2020-08-08 01:32:57 [grid_strat] INFO [154] 当前收益率为:	-5.83 %
+2020-08-08 01:32:57 [grid_strat] INFO [154] 持仓比例为:	70.00 %
+2020-08-08 01:32:57 [grid_strat] INFO [154] 持仓详情: 	90.1346 usdt	69.2985 eos [last price: 2.7762]
+2020-08-08 01:32:57 [grid_strat] INFO [154] ---------------	Trade info end	---------------
+2020-08-08 01:34:27 [grid_strat] INFO [154] ---------------	Trade info start	---------------
+2020-08-08 01:34:27 [grid_strat] INFO [154] 2020/08/08 01:34:27 -> sell 4.9499 eos (~ 14.1626 usdt) on price [2.8612]
+2020-08-08 01:34:27 [grid_strat] INFO [154] Total trade fee: 0.0099 eos.
+2020-08-08 01:34:27 [grid_strat] INFO [154] 账户初始资产为:	300.0000	当前资产为:	288.3508
+2020-08-08 01:34:27 [grid_strat] INFO [154] 当前收益率为:	-3.88 %
+2020-08-08 01:34:27 [grid_strat] INFO [154] 持仓比例为:	65.00 %
+2020-08-08 01:34:27 [grid_strat] INFO [154] 持仓详情: 	104.2689 usdt	64.3486 eos [last price: 2.8607]
+2020-08-08 01:34:27 [grid_strat] INFO [154] ---------------	Trade info end	---------------
+2020-08-08 01:35:57 [grid_strat] INFO [154] ---------------	Trade info start	---------------
+2020-08-08 01:35:57 [grid_strat] INFO [154] 2020/08/08 01:35:57 -> sell 4.9499 eos (~ 14.3304 usdt) on price [2.8951]
+2020-08-08 01:35:57 [grid_strat] INFO [154] Total trade fee: 0.0099 eos.
+2020-08-08 01:35:57 [grid_strat] INFO [154] 账户初始资产为:	300.0000	当前资产为:	290.8505
+2020-08-08 01:35:57 [grid_strat] INFO [154] 当前收益率为:	-3.05 %
+2020-08-08 01:35:57 [grid_strat] INFO [154] 持仓比例为:	60.00 %
+2020-08-08 01:35:57 [grid_strat] INFO [154] 持仓详情: 	118.5706 usdt	59.3987 eos [last price: 2.9004]
+2020-08-08 01:35:57 [grid_strat] INFO [154] ---------------	Trade info end	---------------
+2020-08-08 02:45:57 [grid_strat] INFO [154] ---------------	Trade info start	---------------
+2020-08-08 02:45:57 [grid_strat] INFO [154] 2020/08/08 02:45:57 -> sell 4.9499 eos (~ 14.6071 usdt) on price [2.9510]
+2020-08-08 02:45:57 [grid_strat] INFO [154] Total trade fee: 0.0099 eos.
+2020-08-08 02:45:57 [grid_strat] INFO [154] 账户初始资产为:	300.0000	当前资产为:	293.8596
+2020-08-08 02:45:57 [grid_strat] INFO [154] 当前收益率为:	-2.05 %
+2020-08-08 02:45:57 [grid_strat] INFO [154] 持仓比例为:	55.00 %
+2020-08-08 02:45:57 [grid_strat] INFO [154] 持仓详情: 	133.1485 usdt	54.4488 eos [last price: 2.9516]
+2020-08-08 02:45:57 [grid_strat] INFO [154] ---------------	Trade info end	---------------
+2020-08-08 05:45:57 [grid_strat] INFO [154] ---------------	Trade info start	---------------
+2020-08-08 05:45:57 [grid_strat] INFO [154] 2020/08/08 05:45:57 -> sell 4.9499 eos (~ 14.8551 usdt) on price [3.0011]
+2020-08-08 05:45:57 [grid_strat] INFO [154] Total trade fee: 0.0099 eos.
+2020-08-08 05:45:57 [grid_strat] INFO [154] 账户初始资产为:	300.0000	当前资产为:	296.4756
+2020-08-08 05:45:57 [grid_strat] INFO [154] 当前收益率为:	-1.17 %
+2020-08-08 05:45:57 [grid_strat] INFO [154] 持仓比例为:	50.00 %
+2020-08-08 05:45:57 [grid_strat] INFO [154] 持仓详情: 	147.9739 usdt	49.4989 eos [last price: 3.0001]
+2020-08-08 05:45:57 [grid_strat] INFO [154] ---------------	Trade info end	---------------
