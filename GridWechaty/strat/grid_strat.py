@@ -23,11 +23,11 @@ class GridStrat():
         percent = int(self.last_percent * 100)
         assets = self.money + self.token * self.last_price
         earn_ratio = 100 * (assets - self.start_value) / self.start_value
-        return '账户初始资产为:\t{:.4f}\t当前资产为:\t{:.4f}'.format(self.start_value, assets),\
+        return '\n'.join(['账户初始资产为:\t{:.4f}\t当前资产为:\t{:.4f}'.format(self.start_value, assets),\
                '当前收益率为:\t{:.2f} %'.format(earn_ratio),\
                '持仓比例为:\t{:.2f} %'.format(percent), \
                '持仓详情: \t{:.4f} usdt\t{:.4f} {} [last price: {:.4f}]'.format(self.money, self.token, self.token_name,
-                                                                            self.last_price)
+                                                                            self.last_price)])
 
     def init_grid(self):
         price_part_value = (self.highest - self.lowest) / self.parts
@@ -43,11 +43,10 @@ class GridStrat():
         self.parts = parts
         self.last_price_index = None
         self.init_grid()
-        infos = ['Update grid at [lowest]: {}, [highest]: {}, [parts]: {}'.format(lowest, highest, parts), ]
-        for info in self.__str__():
-            infos.append(info)
-        logger.info('\n'.join(infos))
-        return '[GRID SCRIPT]: Strat cfg update!', '\n'.join(infos)
+        logs = ['Update grid at [lowest]: {}, [highest]: {}, [parts]: {}'.format(lowest, highest, parts), ]
+        logs.append(self.__str__())
+        logger.info('\n'.join(logs))
+        return '\n'.join(logs)
 
     def run_data(self, data, date=''):
         return self.run_next(data, date=date)
@@ -63,7 +62,6 @@ class GridStrat():
     def run_next(self, data, date=''):
         date = date if date != '' else time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(time.time()))
         close, depth = data
-        print('close', close)
         if self.last_price_index == None:
             for i in range(len(self.price_levels)):
                 if float(close) > self.price_levels[i]:
@@ -102,15 +100,13 @@ class GridStrat():
         print('target', target)
         logs = []
         self.last_price = close
-        logs.append('-' * 15 + '\tTrade info start\t' + '-' * 15)
+        logs.append('-' * 9 + '\tTrade info start\t' + '-' * 9)
         is_trade_done = False
         if target > 0:
             if self.percent_levels[self.last_price_index] - target == 0:
                 usdt_ammount = target * self.money
             else:
                 usdt_ammount = round(target * self.money / (1 - self.last_percent), 4)
-            mail_subject = '[GRID SCRIPT]: buy {:.4f} usdt (~ {:.4f} {}) arround price [{:.4f}]'\
-                .format(usdt_ammount, usdt_ammount/close, self.token_name, close)
             for price, volumn in depth[0]:
                 price, volumn = float(price), float(volumn)
                 if usdt_ammount > price * volumn:
@@ -129,8 +125,6 @@ class GridStrat():
                     break
         else:
             token_ammount = abs(target * self.token / self.last_percent)
-            mail_subject = '[GRID SCRIPT]: sell {:.4f} {} (~ {:.4f} usdt) arround price [{:.4f}]'\
-                .format(token_ammount, self.token_name, token_ammount * close, close)
             for price, volumn in depth[1]:
                 price, volumn = float(price), float(volumn)
                 if token_ammount > volumn:
@@ -148,8 +142,7 @@ class GridStrat():
                 if is_trade_done:
                     break
         self.last_percent += target
-        for log in self.__str__():
-            logs.append(log)
-        logs.append('-' * 15 + '\tTrade info end\t' + '-' * 15)
+        logs.append(self.__str__())
+        logs.append('-' * 9 + '\tTrade info end\t' + '-' * 9)
         _ = [logger.info(log) for log in logs]
-        return mail_subject, '\n'.join(logs)
+        return '\n'.join(logs)
