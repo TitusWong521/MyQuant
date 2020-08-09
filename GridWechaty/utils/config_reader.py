@@ -65,3 +65,21 @@ class Config(object):
             return self.config.get(section, option)
         except NoOptionError:
             return default
+
+    def set(self, key, value):
+        """
+        获取配置
+        :param str key: 格式 [section].[key] 如：app.name
+        :param value: 要设置的值
+        :return:
+        """
+        map_key = key.split('.')
+        if len(map_key) < 2:
+            section = map_key[0]
+            if not self.config.has_section(section):
+                option = '.'.join(map_key[1:])
+                try:
+                    self.config.set(section, option, value)
+                    return self.config.write(open(self.config_file_path, 'w'))
+                except NoOptionError:
+                    return ''

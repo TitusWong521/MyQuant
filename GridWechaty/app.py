@@ -113,6 +113,8 @@ async def on_message(msg: Message):
             Room, Contact] = from_contact if room is None else room
         await conversation.ready()
         await conversation.say('dong')
+    if from_contact.payload.name.upper() == 'TITUS.WONG' and from_contact.contact_id.upper() == 'WZHWNO1':
+        pass
 
 async def wechat():
     global bot
