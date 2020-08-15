@@ -109,14 +109,15 @@ async def on_message(msg: Message):
     from_contact = msg.talker()
     text = msg.text()
     room = msg.room()
+    conversation: Union[
+        Room, Contact] = from_contact if room is None else room
     if text == '#ding':
-        conversation: Union[
-            Room, Contact] = from_contact if room is None else room
         await conversation.ready()
         await conversation.say('dong')
     if from_contact.payload.name.upper() == 'TITUS.WONG' and from_contact.contact_id.upper() == 'WZHWNO1':
         if text.upper() == '#GRIDSTATUS':
-            await trade_reminder(bot, str(grid))
+            await conversation.ready()
+            await conversation.say(str(grid))
 
 async def wechat():
     global bot
@@ -130,10 +131,14 @@ async def wechat():
     bot.on('error', on_error)
     await bot.start()
 
-async def trade_reminder(bot, mail_content):
+async def trade_reminder(bot, mail_content, target=None):
     # '7966229136@chatroom': 一个帅
     # '18887123951@chatroom': 量化播报
-    for id in ['7966229136@chatroom', '18887123951@chatroom']:
+    if not target:
+        target = ['7966229136@chatroom', '18887123951@chatroom']
+    else:
+        target = [target, ]
+    for id in target:
         room = bot.Room.load(id)
         await room.ready()
         conversation: Union[Room, Contact] = room
