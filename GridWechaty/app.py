@@ -81,7 +81,7 @@ async def on_error(error):
     requests.get(url.format(text, desp))
 
 async def on_room_join(room, inviteeList, inviter, timestamp):
-    if room.payload.topic in ['ChatOps - Donut', '量化动态播报']:
+    if room.payload.topic: # in ['ChatOps - Donut', '量化动态播报']:
         conversation: Union[Room, Contact] = room
         for invitee in inviteeList:
             await conversation.ready()
@@ -128,6 +128,16 @@ async def wechat():
     bot.on('error', on_error)
     await bot.start()
 
+async def trade_reminder(bot, mail_content):
+    # '7966229136@chatroom': 一个帅
+    # '18887123951@chatroom': 量化播报
+    for id in ['7966229136@chatroom', '18887123951@chatroom']:
+        room = bot.Room.load(id)
+        await room.ready()
+        conversation: Union[Room, Contact] = room
+        await conversation.ready()
+        await conversation.say(mail_content)
+
 async def run_grid():
     try:
         if cfg.is_changed:
@@ -139,11 +149,7 @@ async def run_grid():
             if int(cfg.get('grid.wechat_reminder')):
                 target_friend = bot.Contact.load('wzhwno1')
                 await target_friend.say(mail_content)
-                room = bot.Room.load("18887123951@chatroom")
-                await room.ready()
-                conversation: Union[Room, Contact] = room
-                await conversation.ready()
-                await conversation.say(mail_content)
+                await trade_reminder(bot, mail_content)
         data = data_loader.get_data(cfg.get('grid.platform'), cfg.get('grid.token'))
     except:
         logger.error(traceback.format_exc())
@@ -158,11 +164,7 @@ async def run_grid():
             if int(cfg.get('grid.wechat_reminder')):
                 target_friend = bot.Contact.load('wzhwno1')
                 await target_friend.say(mail)
-                room = bot.Room.load("18887123951@chatroom")
-                await room.ready()
-                conversation: Union[Room, Contact] = room
-                await conversation.ready()
-                await conversation.say(mail)
+                await trade_reminder(bot, mail)
 
 async def grid_schedule():
     scheduler = AsyncIOScheduler()
