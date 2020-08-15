@@ -38,6 +38,7 @@ api_keys = {
 data_loader = DataLoader(api_keys)
 # online back test
 grid_cache = './utils/grid_cache.pkl'
+global grid
 try:
     grid = dill.load(open(grid_cache, 'rb'))
 except:
@@ -114,7 +115,8 @@ async def on_message(msg: Message):
         await conversation.ready()
         await conversation.say('dong')
     if from_contact.payload.name.upper() == 'TITUS.WONG' and from_contact.contact_id.upper() == 'WZHWNO1':
-        pass
+        if text.upper() == '#GRIDSTATUS':
+            await trade_reminder(bot, str(grid))
 
 async def wechat():
     global bot
