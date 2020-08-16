@@ -75,12 +75,23 @@ class Config(object):
         """
         for key, value in paras.items():
             map_key = key.split('.')
-            if len(map_key) < 2:
+            if len(map_key) > 1:
                 section = map_key[0]
-                if not self.config.has_section(section):
+                if self.config.has_section(section):
                     option = '.'.join(map_key[1:])
                     self.config.set(section, option, value)
         try:
             return self.config.write(open(self.config_file_path, 'w'))
         except NoOptionError:
             return ''
+
+
+if __name__ == '__main__':
+    cfg = Config()
+    cfg.set_cfg_path('../cfg/app.config')
+    print(cfg)
+    cfg.set_paras({
+        'grid.highest': '3.6',
+        'grid.lowest': '2.6',
+    })
+    print(cfg)
