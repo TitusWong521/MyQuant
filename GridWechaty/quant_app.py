@@ -120,7 +120,8 @@ async def on_message(msg: Message):
             await conversation.ready()
             await conversation.say(str(grid))
         elif text.upper().startswith('#SETGRID:'):
-            paras = {('grid.' + item.split('=')[0]): item.split('=')[1] for item in text[8:].lower().split(';')}
+            paras = {('grid.' + item.split('=')[0]): item.split('=')[1] for item in text[9:].lower().split(';')}
+            logger.info('#SETGRID: {}'.format(str(paras)))
             cfg.set_paras(paras)
             await run_grid()
 
@@ -139,8 +140,10 @@ async def wechat():
 async def trade_reminder(bot, mail_content, target=None):
     # '7966229136@chatroom': 一个帅
     # '18887123951@chatroom': 量化播报
+    # '5037006676@chatroom': 不撸啊撸
     if not target:
-        target = ['7966229136@chatroom', '18887123951@chatroom']
+        # target = ['7966229136@chatroom', '18887123951@chatroom', '5037006676@chatroom']
+        target = ['18887123951@chatroom', ]
     else:
         target = [target, ]
     for id in target:
