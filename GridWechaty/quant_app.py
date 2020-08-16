@@ -20,6 +20,7 @@ os.environ['WECHATY_PUPPET_HOSTIE_TOKEN'] = 'puppet_donut_25e31edab29faf7d'
 url = r'https://sc.ftqq.com/SCU108142Te3389e6c15b3491545b65780e559503d5f27661e050c0.send?text={}&desp={}'
 bot: Optional[Wechaty] = None
 # load config file
+global cfg
 cfg = Config()
 cfg.set_cfg_path('./cfg/app.config')
 # init mail helper
@@ -118,6 +119,10 @@ async def on_message(msg: Message):
         if text.upper() == '#GRIDSTATUS':
             await conversation.ready()
             await conversation.say(str(grid))
+        elif text.upper().startswith('#SETGRID:'):
+            paras = {('grid.' + item.split('=')[0]): item.split('=')[1] for item in text[8:].lower().split(';')}
+            cfg.set_paras(paras)
+            await run_grid()
 
 async def wechat():
     global bot
