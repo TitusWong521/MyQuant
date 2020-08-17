@@ -20,7 +20,6 @@ os.environ['WECHATY_PUPPET_HOSTIE_TOKEN'] = 'puppet_donut_25e31edab29faf7d'
 url = r'https://sc.ftqq.com/SCU108142Te3389e6c15b3491545b65780e559503d5f27661e050c0.send?text={}&desp={}'
 bot: Optional[Wechaty] = None
 # load config file
-global cfg
 cfg = Config()
 cfg.set_cfg_path('./cfg/app.config')
 # init mail helper
@@ -56,10 +55,9 @@ grid.trade = data_loader.trade
 def get_time():
     return time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(time.time()))
 
-async def on_scan(status, qrcode, timestamp):
+async def on_scan(status, qrcode):
     print('status: {}'.format(status))
     print('qrcode: {}'.format(qrcode))
-    print('timestamp: {}'.format(timestamp))
     prompt = 'Scan QR Code to login: {}\nhttps://wechaty.github.io/qrcode/{}'.format(status, qrcode)
     text = 'Wechat scaning...'
     desp = '[{}]: {}'.format(get_time(), prompt)
