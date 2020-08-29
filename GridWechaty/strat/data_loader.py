@@ -22,14 +22,16 @@ class DataLoader():
             else:
                 raise Exception('Unsupported exchange!')
 
-    def trade(self, exchange, token, price, volumn, buy_or_sell):
-        # if exchange == 'gateio':
-        #     return self._gateio_trade(token, price, volumn, buy_or_sell)
-        # elif exchange == 'huobipro':
-        #     return self._huobipro_trade(token, price, volumn, buy_or_sell)
-        # else:
-        #     raise Exception('Unsupported exchange!')
-        return 0
+    def trade(self, exchange, token, price, volumn, buy_or_sell, env='TEST'):
+        if env == 'TEST':
+            return 0
+        elif env == 'PROD':
+            if exchange == 'gateio':
+                return self._gateio_trade(token, price, volumn, buy_or_sell)
+            elif exchange == 'huobipro':
+                return self._huobipro_trade(token, price, volumn, buy_or_sell)
+            else:
+                raise Exception('Unsupported exchange!')
 
     def _gateio_trade(self, token, price, volumn, buy_or_sell):
         currency_pair = '{}_usdt'.format(token.lower())

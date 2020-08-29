@@ -49,7 +49,8 @@ except:
                      int(cfg.get('grid.parts')),
                      data_loader.trade,
                      cfg.get('grid.platform').lower(),
-                     cfg.get('grid.token', '').lower())
+                     cfg.get('grid.token', '').lower(),
+                     env=cfg.get('global.env', '').upper())
 grid.trade = data_loader.trade
 
 def get_time():
@@ -181,7 +182,7 @@ async def run_grid():
 
 async def grid_schedule():
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(run_grid, trigger='interval', seconds=int(cfg.get('grid.timespan')), id='run_grid')
+    scheduler.add_job(run_grid, trigger='interval', seconds=int(cfg.get('grid.timespan')), id='run_grid', replace_existing=True)
     scheduler.start()
 
 async def main():

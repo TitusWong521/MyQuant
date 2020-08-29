@@ -3,7 +3,7 @@ import time
 from utils.logger import logger
 
 class GridStrat():
-    def __init__(self, start_value, lowest, highest, parts, trade, exchange, token_name, fee=0.002):
+    def __init__(self, start_value, lowest, highest, parts, trade, exchange, token_name, env='TEST', fee=0.002):
         self.start_value = float(start_value)
         self.money = float(start_value)
         self.token = 0.0
@@ -17,6 +17,7 @@ class GridStrat():
         self.fee = fee
         self.exchange = exchange
         self.token_name = token_name
+        self.env = env
         self.init_grid()
 
     def __str__(self):
@@ -114,7 +115,7 @@ class GridStrat():
                 else:
                     order_volumn = round(usdt_ammount / price, 4)
                     is_trade_done = True
-                self.trade(self.exchange, self.token_name, price, order_volumn, 'buy')
+                self.trade(self.exchange, self.token_name, price, order_volumn, 'buy', self.env)
                 logs.append('{} -> buy {:.4f} usdt (~ {:.4f} {}) on price [{:.4f}]'
                             .format(date, price * order_volumn, order_volumn, self.token_name, price))
                 logs.append('Total trade fee: {:.4f} usdt.'.format(price * order_volumn * self.fee))
@@ -132,7 +133,7 @@ class GridStrat():
                 else:
                     order_volumn = token_ammount
                     is_trade_done = True
-                self.trade(self.exchange, self.token_name, price, order_volumn, 'sell')
+                self.trade(self.exchange, self.token_name, price, order_volumn, 'sell', self.env)
                 logs.append('{} -> sell {:.4f} {} (~ {:.4f} usdt) on price [{:.4f}]'
                             .format(date, order_volumn, self.token_name, order_volumn * price, price))
                 logs.append('Total trade fee: {:.4f} {}.'.format(order_volumn * self.fee, self.token_name))
