@@ -64,12 +64,15 @@ class GridStrat():
         date = date if date != '' else time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(time.time()))
         close, depth = data
         if self.last_price_index == None:
-            for i in range(len(self.price_levels)):
-                if float(close) > self.price_levels[i]:
-                    self.last_price_index = i
-                    target = self.percent_levels[self.last_price_index] - self.last_percent
-                    if target != 0.0:
-                        return True, self.order_target_percent(float(close), depth, target, date=date)
+            if float(close) > self.price_levels[0]:
+                pos = [close > level for level in self.price_levels]
+                i = pos.index(False) - 1
+                self.last_price_index = i
+                target = self.percent_levels[self.last_price_index] - self.last_percent
+                if target != 0.0:
+                    return True, self.order_target_percent(float(close), depth, target, date=date)
+            else:
+                return True, self.order_target_percent(float(close), depth, 1.0, date=date)
         else:
             signal = False
             while True:
