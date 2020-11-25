@@ -28,8 +28,7 @@ class DataLoader():
             return 0
         elif env == 'PROD':
             if exchange == 'gateio':
-                return None
-                # return self._gateio_trade(token, price, volumn, buy_or_sell)
+                return self._gateio_trade(token, price, volumn, buy_or_sell)
             elif exchange == 'huobipro':
                 return self._huobipro_trade(token, price, volumn, buy_or_sell)
             else:
