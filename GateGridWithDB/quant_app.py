@@ -10,7 +10,7 @@ import traceback
 from config_reader import Config
 from logger import logger
 from db_model import create_db, insert
-
+from apscheduler.schedulers.background import BackgroundScheduler
 
 def get_time():
     return time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(time.time()))
@@ -24,6 +24,7 @@ def trade_reminder(reminds, mode=None):
 
 
 def run_grid():
+    logger.info('Function <run_grid> is running...')
     global data_loader
     global grid
     global cfg
@@ -36,6 +37,7 @@ def run_grid():
             logger.info("网格参数有更新，即将更新网格程序")
             reminds = grid.update(float(cfg.get('grid.lowest')), float(cfg.get('grid.highest')),
                                   int(cfg.get('grid.parts')))
+            trade_reminder(reminds, '网格参数更新')
         data = data_loader.get_data(cfg.get('grid.platform'), cfg.get('grid.token'))
     except:
         logger.error(traceback.format_exc())
@@ -50,6 +52,7 @@ def run_grid():
 
 
 def save_grid_status():
+    logger.info('Function <save_grid_status> is running...')
     global data_loader
     global grid
     global cfg
@@ -96,14 +99,16 @@ except:
 grid.trade = data_loader.trade
 
 create_db()
+time.sleep(5)
 
-run_times = 0
-log_times = int(cfg.get('save.timespan')) // int(cfg.get('grid.timespan'))
 save_grid_status()
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(run_grid, trigger='interval', seconds=int(cfg.get('grid.timespan')), id='run_grid',
+                  replace_existing=True)
+scheduler.add_job(save_grid_status, trigger='interval', seconds=int(cfg.get('save.timespan')), id='save_grid_status',
+                  replace_existing=True)
+scheduler.start()
+
 while True:
-    run_times += 1
-    run_grid()
-    if run_times == log_times:
-        save_grid_status()
-        run_times = 0
-    time.sleep(int(cfg.get('grid.timespan')))
+    pass
