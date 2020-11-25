@@ -39,7 +39,6 @@ class DataLoader():
         order = gate_api.Order(currency_pair=currency_pair, side=buy_or_sell, amount=volumn, price=price)
         try:
             result = self.gateio_spot_api.create_order(order)
-            print(result)
         except:
             print(traceback.format_exc())
             return 'fail'
