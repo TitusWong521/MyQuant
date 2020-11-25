@@ -91,6 +91,7 @@ except:
                      data_loader.trade,
                      cfg.get('grid.platform').lower(),
                      cfg.get('grid.token', '').lower(),
+                     cfg.get('grid.last_trade_price', '0.0'),
                      env=cfg.get('global.env', '').upper())
 grid.trade = data_loader.trade
 

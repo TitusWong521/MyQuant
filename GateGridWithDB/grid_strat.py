@@ -6,7 +6,8 @@ from logger import logger
 from db_model import insert
 
 class GridStrat():
-    def __init__(self, start_value, lowest, highest, parts, trade, exchange, token_name, env='TEST', fee=0.002):
+    def __init__(self, start_value, lowest, highest, parts, trade, exchange, token_name, last_trade_price,
+                 env='TEST', fee=0.002):
         self.start_value = float(start_value)
         self.money = float(start_value)
         self.token = 0.0
@@ -16,10 +17,12 @@ class GridStrat():
         self.lowest = float(lowest)
         self.highest = float(highest)
         self.parts = parts
+        self.price_part_value = (self.highest - self.lowest) / self.parts
         self.trade = trade
         self.fee = fee
         self.exchange = exchange
         self.token_name = token_name
+        self.last_trade_price = float(last_trade_price)
         self.env = env
         self.init_grid()
 
@@ -34,9 +37,8 @@ class GridStrat():
                                                                             self.last_price if self.last_price != None else 0.000)])
 
     def init_grid(self):
-        price_part_value = (self.highest - self.lowest) / self.parts
         percent_part_value = 1 / self.parts
-        self.price_levels = [round(self.highest - index * price_part_value, 4) for index in range(self.parts)]
+        self.price_levels = [round(self.highest - index * self.price_part_value, 4) for index in range(self.parts)]
         self.price_levels.insert(0, math.inf)
         self.price_levels.append(0.0000)
         self.percent_levels = [round(0 + index * percent_part_value, 4) for index in range(self.parts + 1)]
@@ -47,6 +49,7 @@ class GridStrat():
         self.lowest = lowest
         self.highest = highest
         self.parts = parts
+        self.price_part_value = (self.highest - self.lowest) / self.parts
         self.last_price_index = None
         self.init_grid()
         logs = ['Update grid at [lowest]: {}, [highest]: {}, [parts]: {}'.format(lowest, highest, parts), ]
@@ -107,7 +110,12 @@ class GridStrat():
             if signal:
                 target = self.percent_levels[self.last_price_index] - self.last_percent
                 if target != 0.0:
-                    return True, self.order_target_percent(float(close), depth, target, date=date)
+                    price_substract = abs(float(close) - self.last_trade_price)
+                    if price_substract / self.price_part_value > 0.80:
+                        self.last_trade_price = float(close)
+                        return True, self.order_target_percent(float(close), depth, target, date=date)
+                    else:
+                        return False, []
                 else:
                     return False, []
             else:
