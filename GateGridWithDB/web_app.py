@@ -1,10 +1,14 @@
 # -*- coding=utf-8 -*-
 # python37
-from flask import Flask
+from flask import Flask, url_for, redirect
 from db_model import *
 import time
+import matplotlib.pyplot as plt
 
 app = Flask('GridInfo')
+host = '119.3.78.178'
+port = 8888
+# app = Flask('GridInfo', static_folder='static')
 
 @app.route('/accountinfo')
 def accountinfo():
@@ -40,8 +44,24 @@ def operinfo():
 
 @app.route('/gridchart')
 def gridchart():
-    account_datas = account_status.get(account_status.select().order_by(account_status.timestamp.desc()))
-    return '暂未实现, 请耐心等待！'
+    account_datas = account_status.filter(token_name='eos')
+    times = [time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(int(account_data.timestamp)))
+             for account_data in account_datas]
+    indexes = [int(account_data.id) for account_data in account_datas]
+    prices = [float(account_data.cur_price) for account_data in account_datas]
+    prices = [price/max(prices) for price in prices]
+    balances = [float(account_data.balance) for account_data in account_datas]
+    balances = [balance / max(balances) for balance in balances]
+    fig, ax = plt.subplots(1, 1)
+    plt.plot(indexes, prices, c='blue', label='EOS')
+    plt.plot(indexes, balances, c='red', label='GRID')
+    # plt.plot(prices, c='blue', label='EOS')
+    # plt.plot(balances, c='red', label='GRID')
+    plt.legend(loc='best')
+    plt.title(f'Grid Status Chart({times[0]} ~ {times[-1]})')
+    plt.savefig('./static/gridchart.png')
+    # return redirect(url_for('static', filename='gridchart.png'))
+    return f"http://{host}:{port}{url_for('static', filename='gridchart.png')}"
 
 if __name__ == '__main__':
-    app.run('0.0.0.0', port=8888, debug=True)
+    app.run('0.0.0.0', port=port, debug=True)
