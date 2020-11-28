@@ -1,6 +1,7 @@
 # -*- coding=utf-8 -*-
 # python37
 import dill
+import random
 from grid_strat import GridStrat
 from data_loader import DataLoader
 import time
@@ -24,7 +25,8 @@ def trade_reminder(reminds, mode=None):
 
 
 def run_grid():
-    logger.info('Function <run_grid> is running...')
+    rand = random.randint(0, 10000)
+    logger.info(f'Function <run_grid-{rand}> is running...')
     global data_loader
     global grid
     global cfg
@@ -49,10 +51,12 @@ def run_grid():
             dill.dump(grid, open(grid_cache, 'wb'))
             grid.trade = data_loader.trade
             trade_reminder(reminds)
+    logger.info(f'Function <run_grid-{rand}> is done.')
 
 
 def save_grid_status():
-    logger.info('Function <save_grid_status> is running...')
+    rand = random.randint(0, 10000)
+    logger.info(f'Function <save_grid_status-{rand}> is running...')
     global data_loader
     global grid
     global cfg
@@ -63,6 +67,7 @@ def save_grid_status():
     balance = usdt + token_count * float(cur_price)
     paras = [str(item) for item in [int(time.time()), usdt, token_name, token_count, cur_price, balance]]
     insert('account_status', paras)
+    logger.info(f'Function <save_grid_status-{rand}> is done.')
 
 
 # load config file
@@ -99,7 +104,6 @@ except:
 grid.trade = data_loader.trade
 
 create_db()
-time.sleep(5)
 
 save_grid_status()
 
@@ -109,6 +113,7 @@ scheduler.add_job(run_grid, trigger='interval', seconds=int(cfg.get('grid.timesp
 scheduler.add_job(save_grid_status, trigger='interval', seconds=int(cfg.get('save.timespan')), id='save_grid_status',
                   replace_existing=True)
 scheduler.start()
+trade_reminder('网格已经开始运行！', '开始运行提示')
 
 while True:
     pass
