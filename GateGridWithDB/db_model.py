@@ -2,6 +2,7 @@
 # python37
 import os
 from peewee import *
+import time
 
 db = SqliteDatabase('griddata.db')
 
@@ -32,6 +33,7 @@ def create_db():
     if not os.path.isfile('griddata.db'):
         db.connect()
         db.create_tables([account_status, oper_his])
+        time.sleep(5)
 
 def insert(type, paras):
     if type == 'account_status':
