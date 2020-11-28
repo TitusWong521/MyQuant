@@ -12,6 +12,7 @@ from config_reader import Config
 from logger import logger
 from db_model import create_db, insert
 from apscheduler.schedulers.background import BackgroundScheduler
+import urllib3
 
 def get_time():
     return time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(time.time()))
@@ -41,6 +42,10 @@ def run_grid():
                                   int(cfg.get('grid.parts')))
             trade_reminder(reminds, '网格参数更新')
         data = data_loader.get_data(cfg.get('grid.platform'), cfg.get('grid.token'))
+    except urllib3.exceptions.ReadTimeoutError:
+        pass
+    except urllib3.exceptions.MaxRetryError:
+        pass
     except:
         logger.error(traceback.format_exc())
         trade_reminder(traceback.format_exc(), '出错信息')

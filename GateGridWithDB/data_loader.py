@@ -65,9 +65,9 @@ class DataLoader():
             raise Exception('Unsupported exchange!')
 
     def _get_gateio_data(self, token):
-        close = self.gateio_spot_api.list_tickers(currency_pair='{}_usdt'.format(token.lower()), _request_timeout=3)
+        close = self.gateio_spot_api.list_tickers(currency_pair='{}_usdt'.format(token.lower()), _request_timeout=5)
         close = close[0].last
-        order_book = self.gateio_spot_api.list_order_book(currency_pair='{}_usdt'.format(token.lower()), limit=15, _request_timeout=3)
+        order_book = self.gateio_spot_api.list_order_book(currency_pair='{}_usdt'.format(token.lower()), limit=15, _request_timeout=5)
         depth = order_book.asks, order_book.bids
         return close, depth
 
