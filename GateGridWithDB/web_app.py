@@ -11,8 +11,7 @@ host = '119.3.78.178'
 port = 8888
 # app = Flask('GridInfo', static_folder='static')
 
-@app.route('/accountinfo')
-def accountinfo():
+def last_status(version=None):
     init_status = account_status.get(account_status.id == 1)
     last_status = account_status.get(account_status.id == account_status.select().count())
     earn_ratio = 100 * (float(last_status.balance) - float(init_status.balance)) / float(init_status.balance)
@@ -28,10 +27,19 @@ def accountinfo():
                                                                      last_status.token_name,
                                                                      float(last_status.cur_price))
     ]
-    return '<br>'.join(status_desc)
+    status_desc_eng = [
+        'Account initial assets: {:.4f}'.format(float(init_status.balance)),
+        'Assets when {} is: {:.4f}'.format(last_time, float(last_status.balance)),
+        'Current yield ratio: {:.2f} %'.format(earn_ratio),
+        'Hold ratio: {:.2f} %'.format(percent),
+        'Hold detail: {:.4f} usdt {:.4f} {} [last price: {:.4f}]'.format(float(last_status.usdt),
+                                                                     float(last_status.token_count),
+                                                                     last_status.token_name,
+                                                                     float(last_status.cur_price))
+    ]
+    return status_desc if version == None else status_desc_eng
 
-@app.route('/operinfo')
-def operinfo():
+def last_oper(version=None):
     last_oper = oper_his.get(oper_his.id == oper_his.select().count())
     last_time = time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(int(last_oper.timestamp)))
     oper_type = '买入' if last_oper.type == 'buy' else '卖出'
@@ -40,8 +48,20 @@ def operinfo():
         f'在{last_oper.token_name}价格为{last_oper.cur_price} USDT时，{oper_type} {last_oper.trade_count} USDT',
         f'交易结束时，账户资产约为: {"%.4f" % float(last_oper.balance)} USDT'
     ]
-    return '<br>'.join(oper_desc)
+    oper_desc_eng = [
+        f'Last operation is: {last_time}',
+        f'When {last_oper.token_name} price is {last_oper.cur_price} USDT, {last_oper.type} {last_oper.trade_count} USDT',
+        f'After trading, account assets is: {"%.4f" % float(last_oper.balance)} USDT'
+    ]
+    return oper_desc if version == None else oper_desc_eng
 
+@app.route('/accountinfo')
+def accountinfo():
+    return '<br>'.join(last_status())
+
+@app.route('/operinfo')
+def operinfo():
+    return '<br>'.join(last_oper())
 
 @app.route('/gridchart')
 def gridchart():
@@ -98,6 +118,9 @@ def gridchart():
     # plt.plot(balances, c='red', label='GRID')
     plt.legend(loc='best')
     plt.title(f'Grid Status Chart({times[0]} ~ {times[-1]})')
+    account_desc = '\n'.join(last_status('eng'))
+    oper_desc = '\n'.join(last_oper('eng'))
+    plt.text(48, 0.945, f'{account_desc}\n{oper_desc}', fontsize=7)
     plt.savefig('./static/gridchart.png')
     # return redirect(url_for('static', filename='gridchart.png'))
     return f"http://{host}:{port}{url_for('static', filename='gridchart.png')}"
