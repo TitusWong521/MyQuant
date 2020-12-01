@@ -120,7 +120,7 @@ def gridchart():
     plt.title(f'Grid Status Chart({times[0]} ~ {times[-1]})')
     account_desc = '\n'.join(last_status('eng'))
     oper_desc = '\n'.join(last_oper('eng'))
-    plt.text(48, 0.945, f'{account_desc}\n{oper_desc}', fontsize=7)
+    plt.text(48, 0.945, f'{account_desc}\n{oper_desc}', fontsize=7, color='gray')
     plt.savefig('./static/gridchart.png')
     # return redirect(url_for('static', filename='gridchart.png'))
     return f"http://{host}:{port}{url_for('static', filename='gridchart.png')}"
