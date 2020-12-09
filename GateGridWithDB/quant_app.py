@@ -10,7 +10,8 @@ import base64
 import traceback
 from config_reader import Config
 from logger import logger
-from db_model import create_db, insert
+# from db_model import create_db, insert
+from db_model import insert
 from apscheduler.schedulers.background import BackgroundScheduler
 import urllib3
 
@@ -107,8 +108,6 @@ except:
                      cfg.get('grid.last_trade_price', '0.0'),
                      env=cfg.get('global.env', '').upper())
 grid.trade = data_loader.trade
-
-create_db()
 
 save_grid_status()
 
