@@ -66,11 +66,15 @@ def save_grid_status():
     global data_loader
     global grid
     global cfg
-    usdt = grid.money
+    # usdt = grid.money
+    # token_name = cfg.get('grid.token')
+    # token_count = grid.token
+    # cur_price = data_loader.get_data(cfg.get('grid.platform'), cfg.get('grid.token'))[0]
+    # balance = usdt + token_count * float(cur_price)
     token_name = cfg.get('grid.token')
-    token_count = grid.token
+    token_count, usdt = data_loader.get_account(cfg.get('grid.platform'), cfg.get('grid.token'))
     cur_price = data_loader.get_data(cfg.get('grid.platform'), cfg.get('grid.token'))[0]
-    balance = usdt + token_count * float(cur_price)
+    balance = float(usdt) + float(token_count) * float(cur_price)
     paras = [str(item) for item in [int(time.time()), usdt, token_name, token_count, cur_price, balance]]
     insert('account_status', paras)
     logger.info(f'Function <save_grid_status-{rand}> is done.')

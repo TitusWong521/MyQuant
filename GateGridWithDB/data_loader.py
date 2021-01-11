@@ -64,12 +64,23 @@ class DataLoader():
         else:
             raise Exception('Unsupported exchange!')
 
+    def get_account(self, exchange, token):
+        if exchange == 'gateio':
+            return self._get_gateio_account(token)
+        else:
+            raise Exception('Unsupported exchange!')
+
     def _get_gateio_data(self, token):
         close = self.gateio_spot_api.list_tickers(currency_pair='{}_usdt'.format(token.lower()), _request_timeout=5)
         close = close[0].last
         order_book = self.gateio_spot_api.list_order_book(currency_pair='{}_usdt'.format(token.lower()), limit=15, _request_timeout=5)
         depth = order_book.asks, order_book.bids
         return close, depth
+
+    def _get_gateio_account(self, token):
+        token_info = self.gateio_spot_api.list_spot_accounts(currency=token)
+        usdt_info = self.gateio_spot_api.list_spot_accounts(currency='USDT')
+        return token_info[0].available + token_info[0].locked, usdt_info[0].available + usdt_info[0].locked
 
     def _get_huobipro_data(self, token):
         # huobi_market_api = 'https://api.huobi.pro/market/'
@@ -94,3 +105,22 @@ class DataLoader():
         # return close, depth
         pass
 
+
+if __name__ == '__main__':
+    from config_reader import Config
+    import base64
+    # load config file
+    cfg = Config('./app.config')
+    # init data loader
+    api_keys = {
+        'gateio': [
+            base64.b64decode(cfg.get('global.gateio_api_key')[3:-3]).decode('utf-8'),
+            base64.b64decode(cfg.get('global.gateio_api_secret')[3:-3]).decode('utf-8')
+        ],
+        'huobipro': [
+            base64.b64decode(cfg.get('global.huobipro_api_key')[3:-3]).decode('utf-8'),
+            base64.b64decode(cfg.get('global.huobipro_api_secret')[3:-3]).decode('utf-8')
+        ],
+    }
+    data_loader = DataLoader(api_keys)
+    print(data_loader._get_gateio_account('eos'))
