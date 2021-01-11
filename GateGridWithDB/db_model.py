@@ -64,10 +64,10 @@
 
 def insert(type, paras):
     if type == 'account_status':
-        with open('./static/account_status.csv', 'a') as f:
+        with open('./static/account_status.csv', 'a+') as f:
             f.write(','.join([str(para) for para in paras]))
     elif type == 'oper_his':
-        with open('./static/oper_his.csv', 'a') as f:
+        with open('./static/oper_his.csv', 'a+') as f:
             f.write(','.join([str(para) for para in paras]))
     else:
         pass
