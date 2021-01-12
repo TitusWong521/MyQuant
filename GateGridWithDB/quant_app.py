@@ -51,6 +51,9 @@ def run_grid():
         logger.error(traceback.format_exc())
         trade_reminder(traceback.format_exc(), '出错信息')
     else:
+        token_count, usdt = data_loader.get_account(cfg.get('grid.platform'), cfg.get('grid.token'))
+        grid.money = usdt
+        grid.token = token_count
         flag, reminds = grid.run_data(data)
         if flag:
             grid.trade = None
