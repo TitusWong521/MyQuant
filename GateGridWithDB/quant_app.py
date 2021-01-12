@@ -102,6 +102,9 @@ data_loader = DataLoader(api_keys)
 grid_cache = './grid_cache.pkl'
 try:
     grid = dill.load(open(grid_cache, 'rb'))
+    token_count, usdt = data_loader.get_account(cfg.get('grid.platform'), cfg.get('grid.token'))
+    grid.money = usdt
+    grid.token = token_count
 except:
     logger.error(traceback.format_exc())
     trade_reminder(traceback.format_exc(), '出错信息')
