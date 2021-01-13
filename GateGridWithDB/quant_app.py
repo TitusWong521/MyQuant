@@ -52,8 +52,8 @@ def run_grid():
         trade_reminder(traceback.format_exc(), '出错信息')
     else:
         token_count, usdt = data_loader.get_account(cfg.get('grid.platform'), cfg.get('grid.token'))
-        grid.money = usdt
-        grid.token = token_count
+        grid.money = float(usdt)
+        grid.token = float(token_count)
         flag, reminds = grid.run_data(data)
         if flag:
             grid.trade = None
@@ -78,7 +78,7 @@ def save_grid_status():
     token_count, usdt = data_loader.get_account(cfg.get('grid.platform'), cfg.get('grid.token'))
     cur_price = data_loader.get_data(cfg.get('grid.platform'), cfg.get('grid.token'))[0]
     balance = float(usdt) + float(token_count) * float(cur_price)
-    paras = [str(item) for item in [int(time.time()), usdt, token_name, token_count, cur_price, balance]]
+    paras = [str(item) for item in [int(time.time()), float(usdt), token_name, float(token_count), cur_price, balance]]
     insert('account_status', paras)
     logger.info(f'Function <save_grid_status-{rand}> is done.')
 
@@ -103,8 +103,8 @@ grid_cache = './grid_cache.pkl'
 try:
     grid = dill.load(open(grid_cache, 'rb'))
     token_count, usdt = data_loader.get_account(cfg.get('grid.platform'), cfg.get('grid.token'))
-    grid.money = usdt
-    grid.token = token_count
+    grid.money = float(usdt)
+    grid.token = float(token_count)
 except:
     logger.error(traceback.format_exc())
     trade_reminder(traceback.format_exc(), '出错信息')
