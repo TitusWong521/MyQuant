@@ -3,6 +3,7 @@
 from flask import Flask, url_for, redirect
 from db_model import *
 import time
+import math
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import annotate
 
@@ -94,20 +95,25 @@ def operinfo():
 
 @app.route('/gridchart')
 def gridchart():
+    chart_point = 500
     account_datas = [account_data.split(',') for account_data in get_all_status()]
+    scale = math.ceil(len(account_datas) / chart_point)
     times = [time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(int(account_data[0])))
              for account_data in account_datas]
-    indexes = list(range(len(account_datas)))
-    prices = [float(account_data[4]) for account_data in account_datas]
+    indexes = list(range(0, len(account_datas), scale))
+    if len(account_datas) - 1 not in indexes:
+        indexes.append(len(account_datas) - 1)
+    prices = [float(account_datas[index][4]) for index in indexes]
     norm_prices = [price/max(prices) for price in prices]
     min_price_index = norm_prices.index(min(norm_prices))
     max_price_index = norm_prices.index(max(norm_prices))
-    balances = [float(account_data[5]) for account_data in account_datas]
+    balances = [float(account_datas[index][5]) for index in indexes]
     norm_balances = [balance / max(balances) for balance in balances]
     min_balance_index = norm_balances.index(min(norm_balances))
     max_balance_index = norm_balances.index(max(norm_balances))
+    new_indexes = list(range(len(indexes)))
     fig, ax = plt.subplots(1, 1)
-    plt.plot(indexes, norm_prices, c='blue', label='EOS')
+    plt.plot(new_indexes, norm_prices, c='blue', label='EOS')
     annotate(f"{'%.4f' % prices[0]}",
              xy=(0, norm_prices[0]), xycoords='data',
              xytext=(15, -20), textcoords='offset points', fontsize=10, color='purple',
@@ -125,7 +131,7 @@ def gridchart():
                  xy=(max_price_index, norm_prices[max_price_index]), xycoords='data',
                  xytext=(0, 30), textcoords='offset points', fontsize=10, color='purple',
                  arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=.2"))
-    plt.plot(indexes, norm_balances, c='red', label='GRID')
+    plt.plot(new_indexes, norm_balances, c='red', label='GRID')
     annotate(f"{'%.4f' % balances[0]}",
              xy=(0, norm_balances[0]), xycoords='data',
              xytext=(15, -45), textcoords='offset points', fontsize=10, color='purple',
@@ -147,9 +153,6 @@ def gridchart():
     # plt.plot(balances, c='red', label='GRID')
     plt.legend(loc='best')
     plt.title(f'Grid Status Chart({times[0]} ~ {times[-1]})')
-    account_desc = '\n'.join(last_status('eng'))
-    oper_desc = '\n'.join(last_oper('eng'))
-    plt.text(48, 0.945, f'{account_desc}\n{oper_desc}', fontsize=7, color='gray')
     plt.savefig('./static/gridchart.png')
     # return redirect(url_for('static', filename='gridchart.png'))
     return f"http://{host}:{port}{url_for('static', filename='gridchart.png')}"
