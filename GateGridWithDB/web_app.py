@@ -23,7 +23,7 @@ port = 8888
 def last_status(version=None):
     all_status = get_all_status()
     init_status = all_status[0].split(',')
-    last_status = all_status[-1]
+    last_status = all_status[-1].split(',')
     earn_ratio = 100 * (float(last_status[5]) - float(init_status[5])) / float(init_status[5])
     percent = 100 * (float(last_status[5]) - float(last_status[1])) / float(last_status[5])
     last_time = time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(int(last_status[0])))
@@ -62,7 +62,7 @@ def last_status(version=None):
 
 def last_oper(version=None):
     all_oper = get_all_opers()
-    last_oper = all_oper[0].split(',')
+    last_oper = all_oper[-1].split(',')
     last_time = time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(int(last_oper[0])))
     oper_type = '买入' if last_oper[1] == 'buy' else '卖出'
     oper_desc = [
